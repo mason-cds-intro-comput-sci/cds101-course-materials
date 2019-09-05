@@ -1,5 +1,5 @@
 ---
-title: "Mini-homework 2b: Visualization practice"
+title: "Mini-homework 2: Visualization practice"
 author: FirstName LastName
 date: "`r Sys.Date()`"
 documentclass: article

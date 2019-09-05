@@ -1,5 +1,5 @@
 ---
-title: "Mini-homework 2a: R Markdown practice"
+title: "Mini-homework 1: R Markdown practice"
 author: "FirstName LastName"
 date: "`r Sys.Date()`"
 documentclass: article
