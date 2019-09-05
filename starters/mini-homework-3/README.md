@@ -104,7 +104,7 @@ Remember to proper grammar, punctuation, etc. when answering the exercises, as w
 
     3. What happens if you replace it with `position = "dodge"`?
 
-    4. What does it change in your output?
+    4. What does the `position` argument control in the output?
 
 > #### Hint
 > When moving the input, be careful with the commas!

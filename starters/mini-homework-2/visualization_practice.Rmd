@@ -128,7 +128,7 @@ axis?
 #### Exercise
 
 Take a look at the `mpg` table again (in the section [Viewing the
-dataset](#viewing-the-dataset)). Choose a **categorical variable** that isn't
+dataset](#viewing-the-dataset)). Choose a **continuous variable** that isn't
 `displ`. Then, change the visualization code below so that your chosen variable
 replaces `displ` on the horizontal axis (the vertical should still be `hwy`).
 
