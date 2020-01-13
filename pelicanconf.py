@@ -85,7 +85,7 @@ MENUITEMS = [
 ]
 
 # Plugins
-PLUGIN_PATHS = ["plugins"]
+PLUGIN_PATHS = ["pelican-plugins"]
 PLUGINS = [
     "custom_article_urls",
     "pandoc_reader",
