@@ -1,0 +1,373 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Lab 02 – Exploration by visualization: the Galton&nbsp;dataset</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the lab, which contains a starter file named [lab02.Rmd]{.monospace}.
+This lab shows you how to use the [ggplot2]{.monospace} package to visualize datasets and demonstrates how visualization plays a crucial role in data exploration.
+Start by reading <a href="#why-data-visualization"><i class="fas fa-link"></i>Why data visualization?</a> to learn why data visualization is important and why the first lab focuses on it.
+Next, read the <a href="#about-the-dataset"><i class="fas fa-link"></i>About the dataset</a> section to get some background information on the dataset that you&#8217;ll be working with.
+Continue reading the lab instructions and complete any exercises using the provided spaces within your starter file [lab02.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <a href="#how-to-submit"><i class="fas fa-link"></i>How to submit</a> section&nbsp;below.</p>
+<h2>Why data&nbsp;visualization?</h2>
+<p>Why is data visualization an important topic?
+On the face of it, you might wonder why we need to dedicate any time to this topic.
+Aren&#8217;t plots really easy now that we all have computers?
+Isn&#8217;t making plots and figures one of the <em>last</em> things that we do for a project or lab report, after we&#8217;ve figured everything out?
+Why start with this?
+Since a picture (or visualization) is worth a thousand words, take a moment to explore the data visualizations linked&nbsp;below.</p>
+<p>:::{.no-bullets}
+*   <a href="http://setosa.io/bus/"><i class="fas fa-link" data-fa-transform="grow-2"></i>&nbsp; Why do buses&nbsp;bunch?</a></p>
+<ul>
+<li><a href="http://www.pewresearch.org/next-america/#Two-Dramas-in-Slow-Motion"><i class="fas fa-link" data-fa-transform="grow-2"></i>&nbsp; <span class="caps">U.S.</span> Age Pyramid Becomes a Rectangle</a>&nbsp;:::</li>
+</ul>
+<p>@.
+    After taking a few minutes to explore these visualizations, write at least one full sentence that explains one thing you noticed about either visualization that makes it effective at conveying&nbsp;information.</p>
+<p>Visualizations have an important role to play in nearly every stage of a data science project.
+High-quality visualizations help people to understand your results and can activate their curiosity about your work and ideas.
+Creating visualizations in R is also easy and fun, and learning how to make them will help you become more comfortable with using R and RStudio.
+You will quickly see how simple it is to make colorful and eye-catching&nbsp;plots!</p>
+<h2>About the&nbsp;dataset</h2>
+<p>You will be exploring the famous dataset by Francis Galton for this week&#8217;s lab on data visualization.
+The data were transcribed by <span class="caps">J.A.</span> Hanley[@hanley:2004] who has published them at <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/galton/">http://www.medicine.mcgill.ca/epidemiology/hanley/galton/</a>.
+Francis Galton was developing ways to quantify the heritability of traits in the 1880s, and as part of this work he collected data on the heights of 898 adult children and their&nbsp;parents.</p>
+<p>The table below provides descriptions of the dataset&#8217;s 6&nbsp;variables,</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="monospace">[family]</td>
+<td>a category with levels for each family</td>
+</tr>
+<tr>
+<td class="monospace">[father]</td>
+<td>the father&#8217;s height (in inches)</td>
+</tr>
+<tr>
+<td class="monospace">[mother]</td>
+<td>the mother&#8217;s height (in inches)</td>
+</tr>
+<tr>
+<td class="monospace">[sex]</td>
+<td class="monospace">the child&#8217;s sex: [F]</td>
+</tr>
+<tr>
+<td class="monospace">[height]</td>
+<td>the child&#8217;s height as an adult (in inches)</td>
+</tr>
+<tr>
+<td class="monospace">[nkids]</td>
+<td>the number of adult children in the family, or, at least, the number whose heights Galton recorded.</td>
+</tr>
+</tbody>
+</table>
+<h2>Visualization by&nbsp;example</h2>
+<p>::: {.callout .primary}
+[How do I load the&nbsp;dataset?]{.h4}</p>
+<p>The dataset should be automatically loaded into the variable [galton]{.monospace} for you in the R Markdown file for your lab report.
+To explore the dataset, type the following in your <em>Console</em>&nbsp;window,</p>
+<div class="highlight"><pre><span></span><span class="nf">View</span><span class="p">(</span><span class="n">galton</span><span class="p">)</span>
+</pre></div>
+
+
+<p>If running this does not show you a data table, make sure you run the [setup]{.monospace} code block at the top of your R Markdown file first!&nbsp;:::</p>
+<p>Before we discuss the general format for creating [ggplot2]{.monospace} plots, let&#8217;s play around with some&nbsp;examples:</p>
+<p>@height-histogram.
+    In your lab report, create an R code block that contains the following&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">ggplot</span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">galton</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">  </span><span class="n">geom_histogram</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height</span><span class="p">),</span><span class="w"></span>
+<span class="w">    </span><span class="n">bins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">To</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">click</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">green</span><span class="w"> </span><span class="ss">&quot;play&quot;</span><span class="w"> </span><span class="n">button</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">upper</span><span class="w"> </span><span class="nf">right</span><span class="w"> </span><span class="n">corner</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="ow">or</span><span class="p">,</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="nc">cursor</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="n">press</span><span class="w"> </span><span class="o">&lt;</span><span class="n">kbd</span><span class="o">&gt;</span><span class="n">Ctrl</span><span class="o">&lt;/</span><span class="n">kbd</span><span class="o">&gt;+&lt;</span><span class="n">kbd</span><span class="o">&gt;</span><span class="n">Shift</span><span class="o">&lt;/</span><span class="n">kbd</span><span class="o">&gt;+&lt;</span><span class="n">kbd</span><span class="o">&gt;</span><span class="n">Enter</span><span class="o">&lt;/</span><span class="n">kbd</span><span class="o">&gt;</span><span class="p">.</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">plot</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">histogram</span><span class="p">.</span><span class="w"></span>
+
+<span class="k">After</span><span class="w"> </span><span class="n">creating</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">histogram</span><span class="p">,</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">height</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="nc">table</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">view</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="err">`</span><span class="k">View</span><span class="p">(</span><span class="n">galton</span><span class="p">)</span><span class="err">`</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">histogram</span><span class="p">.</span><span class="w"></span>
+<span class="k">Then</span><span class="p">,</span><span class="w"> </span><span class="k">describe</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">histogram</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">doing</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">column</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>The input parameter [bins = 30]{.monospace} controls an important visual element in the histogram plot.
+Let&#8217;s experiment with the parameter in order to figure out what it&nbsp;does.</p>
+<p>@histogram-bins-binwidth.
+    Using the code you wrote in <strong>Exercise @height-histogram</strong> as a starting point, try setting the input keyword [bins]{.monospace} equal to something <em>larger</em> than the number 30, and then equal to something <em>smaller</em> than the number 30.
+    This will create two plots.
+    Then, change the input keyword from [bins]{.monospace} to [binwidth]{.monospace} and set its value equal to 1.
+    Compare the plots and write a conclusion about what the [bins]{.monospace} and [binwidth]{.monospace} inputs&nbsp;control.</p>
+<p>It is simple to add additional arguments to the aesthetic input <code>aes()</code> that change the way data are shown, which can reveal trends that were previously hidden from view.
+Let&#8217;s see what the [fill]{.monospace} argument does to our&nbsp;histogram:</p>
+<p>@histogram-fill.
+    Write the following code in your lab&nbsp;report:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="k">data</span> <span class="o">=</span> <span class="n">galton</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_histogram</span><span class="p">(</span>
+    <span class="n">mapping</span><span class="o">=</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">sex</span><span class="p">),</span>
+    <span class="n">binwidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span>
+    <span class="k">position</span><span class="o">=</span><span class="ss">&quot;identity&quot;</span>
+  <span class="p">)</span>
+<span class="o">```</span>
+
+<span class="n">Run</span> <span class="n">the</span> <span class="n">block</span> <span class="k">and</span> <span class="n">look</span> <span class="k">at</span> <span class="n">the</span> <span class="k">output</span><span class="p">.</span>
+<span class="n">What</span> <span class="n">did</span> <span class="n">adding</span> <span class="p">[</span><span class="n">fill</span> <span class="o">=</span> <span class="n">sex</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">as</span> <span class="n">a</span> <span class="k">new</span> <span class="k">input</span> <span class="k">in</span> <span class="o">`</span><span class="n">aes</span><span class="p">()</span><span class="o">`</span> <span class="k">do</span><span class="o">?</span>
+<span class="n">Does</span> <span class="n">this</span> <span class="n">change</span> <span class="n">the</span> <span class="n">way</span> <span class="n">you</span> <span class="n">might</span> <span class="n">interpret</span> <span class="n">the</span> <span class="n">visualization</span><span class="o">?</span>
+<span class="n">What</span> <span class="n">kinds</span> <span class="k">of</span> <span class="n">differences</span> <span class="n">stand</span> <span class="k">out</span> <span class="n">now</span> <span class="n">that</span> <span class="n">we</span> <span class="n">added</span> <span class="n">this</span><span class="o">?</span>
+</pre></div>
+
+
+<p>As you can now see, changing one of the inputs in your [ggplot2]{.monospace} code can have a substantial effect on the way your visualization looks.
+When a visualization reveals new information, we should describe and interpret it in our lab&nbsp;reports.</p>
+<p>@histogram-analysis.
+    Describe the shape of the male and female height distributions and estimate the value each distribution seems to be centered around.
+    Does there appear to be a tangible difference in the average height for these two distributions?
+    Based on what you know about the relative heights of people, is this a result that you would have expected to see?
+    Why or why&nbsp;not?</p>
+<p>Based on what you&#8217;ve seen so far, do you understand what <strong>all</strong> of the inputs are doing?
+The exercise below guides you through the process of exploring how the different inputs affect the plot&#8217;s&nbsp;look:</p>
+<p>@exploring-inputs.
+    A good way to figure out how R works is to experiment with inputs.
+    What happens if you change the value of [alpha = 0.5]{.monospace} (keep it between 0 and 1).
+    What happens if you remove the input [position = &#8220;identity&#8221;]{.monospace}?
+    What happens if you replace it with [position = &#8220;dodge&#8221;]{.monospace}?
+    What does it change in your&nbsp;output?</p>
+<div class="highlight"><pre><span></span><span class="err">**Hint:** When moving the input, be careful with the commas!</span>
+<span class="err">A comma should separate each input.</span>
+</pre></div>
+
+
+<h2>The [ggplot2]{.monospace}&nbsp;syntax</h2>
+<p>Let&#8217;s take a small break from making plots and review the general syntax for creating a [ggplot2]{.monospace} figure.
+The command <code>ggplot()</code>, as you might have figured out already, creates the plot window.
+Commands with the prefix [geom_]{.monospace}&#8212;-such as <code>geom_histogram()</code>&#8212;-convert data points into different kinds of visualizations, and the command <code>aes()</code> controls the aesthetic properties of each [geom_]{.monospace} object.
+We then specify input parameters inside the parentheses of these commands, <em>with each input separated from neighboring inputs by commas</em> [,]{.monospace} <em>and input names and values separated by the equals sign</em> [=]{.monospace}.
+In general, visualizations in [ggplot2]{.monospace} have a predictable structure for the commands you need to enter.
+The general pattern&nbsp;is:</p>
+<div class="highlight"><pre><span></span><span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">data</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">+</span>                     <span class="c1"># Required in all ggplot2 visualizations</span>
+  <span class="n">geom_</span><span class="o">&lt;</span><span class="n">function</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="n">mapping</span> <span class="o">=</span> <span class="nf">aes</span><span class="p">(</span><span class="o">&lt;</span><span class="n">mapping</span><span class="o">&gt;</span><span class="p">),</span>               <span class="c1"># Required in all ggplot2 visualizations</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">stat</span><span class="o">&gt;</span><span class="p">,</span>                          <span class="c1"># Optional, sensible default chosen</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">position</span><span class="o">&gt;</span>                   <span class="c1"># Optional, sensible default chosen</span>
+  <span class="p">)</span> <span class="o">+</span>
+  <span class="n">coord_</span><span class="o">&lt;</span><span class="n">function</span><span class="o">&gt;</span> <span class="o">+</span>                        <span class="c1"># Optional, sensible default chosen</span>
+  <span class="n">facet_</span><span class="o">&lt;</span><span class="n">function</span><span class="o">&gt;</span> <span class="o">+</span>                        <span class="c1"># Optional, sensible default chosen</span>
+  <span class="n">scale_</span><span class="o">&lt;</span><span class="n">function</span><span class="o">&gt;</span> <span class="o">+</span>                        <span class="c1"># Optional, sensible default chosen</span>
+  <span class="n">theme_</span><span class="o">&lt;</span><span class="n">function</span><span class="o">&gt;</span>                          <span class="c1"># Optional, sensible default chosen</span>
+</pre></div>
+
+
+<p>In the above, anywhere you see a word [\&lt;surrounded>]{.monospace} in angular brackets, you can replace it with one of several choices.
+Bare minimum, you must always specify the first two functions, all the rest are optional and have sensible defaults chosen for you.
+Also note that each major category&#8212;-[geom_]{.monospace} objects, [coord_]{.monospace} objects, [facet_]{.monospace} objects, [scale_]{.monospace} objects, [theme_]{.monospace} objects&#8212;-is added to the [ggplot2]{.monospace} &#8220;sentence&#8221; using the plus sign [+]{.monospace}.
+A helpful way to think about this is that you are building a figure using a series of layers: first you lay down the canvas ([ggplot]{.monospace}), then you visualize the data on a second layer using a certain style of plot ([geom_\&lt;function>]{.monospace}), and afterward you tweak and polish the plot using additional layers to find-tune things.
+This layered approach allows you to create nice figures without much effort or the need to memorize dozens of&nbsp;commands.</p>
+<h2>Scatter-plots</h2>
+<p>Let&#8217;s further explore the data using another type of visualization, the&nbsp;scatter-plot.</p>
+<p>@father-child-heights.
+    Use the following code to create a scatter-plot of each person&#8217;s height as a function of their father&#8217;s&nbsp;height.</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">ggplot</span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">galton</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">  </span><span class="n">geom_point</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">father</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Here</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">height</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="p">(</span><span class="n">dependent</span><span class="p">)</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">father</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">would</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="p">(</span><span class="n">independent</span><span class="p">)</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="k">Describe</span><span class="w"> </span><span class="ow">any</span><span class="w"> </span><span class="n">trends</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="k">full</span><span class="w"> </span><span class="n">sentences</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>Next, let&#8217;s try and create a plot that is similar in spirit to what we did in <strong>Exercise @histogram-fill</strong> so that we can see how the [height]{.monospace} variable depends on the [father]{.monospace} variable when the [sex]{.monospace} variable is taken into account.
+One important difference to know is that we need to use the word [color]{.monospace} as an input instead of [fill]{.monospace}.
+Otherwise, the procedure for grouping over the [sex]{.monospace} variable is basically the&nbsp;same.</p>
+<p>@father-child-heights-color.
+    Figure out how to group the data over the [sex]{.monospace} variable using the [color]{.monospace} input and create a new plot.
+    What does this plot tell you about the relationship between the height measurements and the [sex]{.monospace}&nbsp;variable?</p>
+<h2>Faceting</h2>
+<p>Let&#8217;s introduce another new concept, the facet.
+Facets create visualizations with multiple panels, splitting things up across a categorical variable.
+Let&#8217;s apply this to our scatter-plot that we created in <strong>Exercise @father-child-heights</strong>.</p>
+<p>@add-facet.
+    Copy your code from <strong>Exercise @father-child-heights</strong> that created a scatter-plot.
+    Add the following new command to your code snippet using the [+]{.monospace}&nbsp;sign:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">facet_grid</span><span class="p">(.</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">sex</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">Describe</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">output</span><span class="p">.</span><span class="w"></span>
+<span class="k">Then</span><span class="p">,</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="nf">reverse</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">[</span><span class="n">facet\_grid</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">like</span><span class="w"> </span><span class="nl">so</span><span class="p">:</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">facet_grid</span><span class="p">(</span><span class="n">sex</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="p">.)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">What</span><span class="w"> </span><span class="n">did</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="o">[</span><span class="n">facet\_grid</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="k">output</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="o">[</span><span class="n">. ~ sex</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">versus</span><span class="w"> </span><span class="o">[</span><span class="n">sex ~ .</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">seem</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="vm">?</span><span class="w"></span>
+<span class="k">Is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="n">presented</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="ow">any</span><span class="w"> </span><span class="n">different</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">**</span><span class="n">Exercise</span><span class="w"> </span><span class="nv">@father</span><span class="o">-</span><span class="n">child</span><span class="o">-</span><span class="n">heights</span><span class="o">-</span><span class="n">color</span><span class="o">**</span><span class="vm">?</span><span class="w"></span>
+</pre></div>
+
+
+<h2>Modeling in&nbsp;[ggplot2]{.monospace}</h2>
+<p>You can actually create regression models using [geom_smooth]{.monospace}, which is another handy way to look for trends.
+You can choose from one of several kinds of regression methods.
+Here, we&#8217;ll use linear regression for creating our models (perhaps you remember drawing one of these &#8220;lines of best fit&#8221; by hand in a prior science or math&nbsp;class).</p>
+<p>@add-smooth.
+    Copy your code from <strong>Exercise @father-child-heights</strong> that created a scatter-plot.
+    Add the following new command to your code snippet using the [+]{.monospace}&nbsp;sign:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">geom_smooth</span><span class="p">(</span>
+  <span class="n">mapping</span> <span class="o">=</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">father</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">height</span><span class="p">),</span>
+  <span class="k">method</span> <span class="o">=</span> <span class="ss">&quot;lm&quot;</span>
+<span class="p">)</span>
+<span class="o">```</span>
+
+<span class="k">Describe</span> <span class="n">the</span> <span class="n">line</span> <span class="n">that</span> <span class="n">you</span> <span class="k">get</span> <span class="k">as</span> <span class="k">output</span><span class="p">.</span>
+<span class="n">Does</span> <span class="n">it</span> <span class="n">follow</span> <span class="n">the</span> <span class="n">trends</span> <span class="p">(</span><span class="k">if</span> <span class="k">any</span><span class="p">)</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">previously</span> <span class="n">described</span> <span class="k">in</span> <span class="n">the</span> <span class="k">data</span><span class="o">?</span>
+<span class="n">What</span> <span class="k">do</span> <span class="n">you</span> <span class="n">think</span> <span class="n">the</span> <span class="n">semi</span><span class="o">-</span><span class="n">transparent</span> <span class="n">gray</span> <span class="n">region</span> <span class="n">around</span> <span class="n">the</span> <span class="n">line</span> <span class="n">represents</span><span class="o">?</span>
+</pre></div>
+
+
+<p>When creating a graph, you often want to make some touch ups after you&#8217;ve figured out what to plot.
+Do the following to add some extra polish to the plot you made in <strong>Exercise @add-smooth</strong>.</p>
+<p>@add-annotations.
+    Copy your code from <strong>Exercise @add-smooth</strong> and add the following command to your&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">labs</span><span class="p">(</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="ss">&quot;Height of children as adults versus the height of their fathers&quot;</span><span class="p">,</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="ss">&quot;Father&#39;s height (in)&quot;</span><span class="p">,</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="ss">&quot;Adult child&#39;s height (in)&quot;</span>
+<span class="p">)</span>
+<span class="o">```</span>
+
+<span class="n">You</span> <span class="n">should</span> <span class="n">also</span> <span class="k">alter</span> <span class="n">the</span> <span class="k">size</span> <span class="k">of</span> <span class="n">the</span> <span class="n">scatterplot</span> <span class="n">circles</span> <span class="k">by</span> <span class="n">adding</span> <span class="p">[</span><span class="k">size</span> <span class="o">=</span> <span class="mi">2</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">as</span> <span class="n">an</span> <span class="k">input</span> <span class="k">in</span> <span class="p">[</span><span class="n">geom</span><span class="err">\</span><span class="n">_point</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span>
+</pre></div>
+
+
+<h2>Additional&nbsp;exercises</h2>
+<p>@.
+    Create a similar plot to <strong>Exercise @father-child-heights</strong> and make a scatter-plot of each person&#8217;s height as a function of their <em>mother&#8217;s</em> height.
+    Describe any trends that you see using full sentences.
+    If there&#8217;s a trend both here and in <strong>Exercise @father-child-heights</strong>, does it follow the same general direction or does it not?
+    If the trends move in the same direction, then does one trend look stronger than the other?
+    If so, which one?
+    Explain how you know this using full&nbsp;sentences.</p>
+<p>@.
+    Start with your code from <strong>Exercise @add-facet</strong> and add a [geom_smooth]{.monospace} command that separately performs a linear regression on the male and female categories.
+    Each subplot (or facet) should have a line in it.
+    Additionally, polish the graph using what you learned in <strong>Exercise @add-annotations</strong>.
+    Interpret your results and explain how well these visualizations explain the trends in the dataset, if&nbsp;any.</p>
+<p>@.
+    Compare the [geom_smooth]{.monospace} trend-lines for when used the father&#8217;s height only and when you used both the father&#8217;s height and whether the child was male or female.
+    Do they both show the same trend?
+    Is one trend more &#8220;powerful&#8221; than the other?
+    Why or why not?
+    Remember to respond by writing full&nbsp;sentences.</p>
+<h2>How to&nbsp;submit</h2>
+<p>To submit your lab, follow the two steps below.
+Your lab will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Lab 2</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;lab:</p>
+<ul>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+<h2>Credits</h2>
+<p>This lab is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+<a href="#about-the-galton-dataset">The description of the [Galton]{.monospace} dataset</a> was adapted from the documentation of the same dataset that’s available in the <a href="https://github.com/ProjectMOSAIC/mosaicData">[mosaicData]{.monospace} R package</a> and some of the lab exercises were adapted from problem sets found in <em>Modern Data Science with R</em> by Benjamin Baumer, Daniel Kaplan, and Nicholas Horton.
+All other exercises and instructions written by James Glasbrenner for <span class="caps">CDS</span>-102.</p>
+<h2>References</h2>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

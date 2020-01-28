@@ -1,0 +1,383 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Homework&nbsp;1</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>The first part of this page explains how homework assignments will be handled and evaluated, since they are completed in groups.
+The questions for Homework 1 start further down, <a href="#the-rail-trail-dataset">click this link to skip to that part of the page</a>. </p>
+<h3>Overview</h3>
+<p>As a group, solve the homework problems and write your answers in the R Markdown file [homework_1.Rmd]{.monospace}.
+Grades for the group submissions will, in addition to correctness, be based on document formatting, visualization quality, writing quality, and code style.
+<strong>This means that your group submission is to be written in the style of a exploratory data report,&nbsp;meaning:</strong></p>
+<ul>
+<li>
+<p>Each exercise must be written up using full sentences such that it is clear what question is being&nbsp;answered.</p>
+</li>
+<li>
+<p>There needs to be plain text above each code block explaining what you are doing, and the code blocks should be&nbsp;organized.</p>
+</li>
+<li>
+<p>The R Markdown file <strong>must</strong> knit without error and generate a <span class="caps">PDF</span> file, and the final <span class="caps">PDF</span> output must look nice, clean, and be easy to&nbsp;read.</p>
+</li>
+</ul>
+<h3>Participation</h3>
+<p>Credit for group participation will be determined using the following&nbsp;sources:</p>
+<ol>
+<li>
+<p>A [<span class="caps">CONTRIBUTIONS</span>.md]{.monospace} file distributed with your group&nbsp;repository</p>
+</li>
+<li>
+<p>Commit history on&nbsp;GitHub</p>
+</li>
+<li>
+<p>Discussion history in your group&#8217;s private Slack&nbsp;channel</p>
+</li>
+</ol>
+<p><strong>Each group will need to fill out the [<span class="caps">CONTRIBUTIONS</span>.md]{.monospace} file as part of their submission.</strong>
+This file is where where each group member lists what he or she contributed to the final submission.
+Read the section <strong><a href="#fill-out-the-contributions.md-file">Fill out the [<span class="caps">CONTRIBUTIONS</span>.md]{.monospace} file</a></strong> for more details on how this&nbsp;works.</p>
+<h4>Google&nbsp;Docs</h4>
+<p>If your group used an external document to coordinate and organize your work, such as a Google Doc, then that can also count as evidence of participation, <strong>provided that there is a visible writing history and it is possible to identify which student is responsible for each edit.</strong>
+This will require you to share the relevant file with the instructor with full privileges on the document so that it&#8217;s possible to review the document&#8217;s editing history.
+Please note that anonymous edits to Google Docs documents cannot be used as participation evidence, since there is no way to verify the account responsible for the added content.
+Also, for similar reasons, offline documents traded back and forth via email cannot be accepted as evidence of&nbsp;participation.</p>
+<h3>How to answer the questions as a&nbsp;group</h3>
+<p>The following is a checklist you may follow to help you get started with answering the questions as a&nbsp;group:</p>
+<p>::: {.no-bullets}
+*   <i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; Read through all the problems individually.
+    Then, as a group, discuss what will be needed to fully answer each&nbsp;question.</p>
+<ul>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; As a group, decide how you will split up writing responsibilities.
+    A typical way to do this is to have each group member be responsible for writing out the full answer to a certain number of&nbsp;questions.</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; <strong>(Important)</strong> Before you start, make a copy of [homework_1.Rmd]{.monospace} and <strong>rename the copied file</strong> to include your last name.
+    For example, if your last name is Smith, then your file copy should be renamed to&nbsp;[homework_1_smith.Rmd]{.monospace}.</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; Commit and push your copied file to&nbsp;GitHub.</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; Draft your contributions in <strong>your</strong> file.
+    For example, if my last name was Smith and I agreed to write-up the answers to questions 4, 5, and 6, then I would open up [homework_1_smith.Rmd]{.monospace} and put my answers there.
+    When I&#8217;m done, I would save my file, then commit and push my work to GitHub.&nbsp;:::</p>
+</li>
+</ul>
+<h3>How to edit and merge your answers into the group&nbsp;submission</h3>
+<p>While you will be writing your answers in separate files, eventually the group will need to merge in everyone&#8217;s answers into the main [homework_1.Rmd]{.monospace} document. The following checklist may help with&nbsp;this:</p>
+<ul>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; Select an editor to be in charge of merging everyone&#8217;s answers into the final document [homework_1.Rmd]{.monospace}. Because the editor needs to prepare the document for submission, it is reasonable if he or she contributes slightly less in terms of answering the questions (for example, if everyone else answers three questions, it would be okay if the editor answers&nbsp;two).</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; The editor should ensure that everyone has committed and pushed their answers to GitHub so they can copy and paste in each&nbsp;contribution.</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; The editor needs to make sure that the final submission reads like a coherent document and that the writing style and code style are uniform across all the answers. In other words, it should read like a single person answered all the questions, not a group of four&nbsp;people.</p>
+</li>
+<li>
+<p><i class="far fa-square" data=fa=transform="grow-8"></i>&nbsp; The editor will be in charge of of committing and pushing the final R Markdown file to GitHub, knitting to <span class="caps">PDF</span>, and uploading the <span class="caps">PDF</span> file on&nbsp;Blackboard.</p>
+</li>
+</ul>
+<h3>Fill out the [<span class="caps">CONTRIBUTIONS</span>.md]{.monospace}&nbsp;file</h3>
+<p>After everything is written up and ready for submission, the last thing the group will need to do is fill out the [<span class="caps">CONTRIBUTIONS</span>.md]{.monospace} file.
+By default, the file looks like&nbsp;this:</p>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Contributions</span> <span class="k">to</span> <span class="k">group</span> <span class="n">submission</span>
+
+<span class="o">##</span> <span class="n">Editor</span><span class="p">:</span> <span class="n">FirstName</span> <span class="n">LastName</span> <span class="n">Member</span> <span class="mi">1</span>
+
+<span class="o">*</span>   <span class="n">Questions</span> <span class="n">answered</span><span class="p">:</span>
+
+<span class="o">##</span> <span class="n">FirstName</span> <span class="n">LastName</span> <span class="n">Member</span> <span class="mi">2</span>
+
+<span class="o">*</span>   <span class="n">Questions</span> <span class="n">answered</span><span class="p">:</span>
+
+<span class="o">##</span> <span class="n">FirstName</span> <span class="n">LastName</span> <span class="n">Member</span> <span class="mi">3</span>
+
+<span class="o">*</span>   <span class="n">Questions</span> <span class="n">answered</span><span class="p">:</span>
+
+<span class="o">##</span> <span class="n">FirstName</span> <span class="n">LastName</span> <span class="n">Member</span> <span class="mi">4</span>
+
+<span class="o">*</span>   <span class="n">Questions</span> <span class="n">answered</span><span class="p">:</span>
+</pre></div>
+
+
+<p>At a minimum, you must remove the [FirstName LastName Member]{.monospace} entries in the template and fill in the names of the people in your group, indicate which group member served as the editor, and state which questions were written up by each&nbsp;member.</p>
+<p>Additional information beyond this <strong>should</strong> be supplied, such as indicating when a group member helped another group member edit an answer or gave helpful comments in a Slack discussion. For example, one group member&#8217;s contribution list may read as&nbsp;follows:</p>
+<div class="highlight"><pre><span></span><span class="o">##</span> <span class="n">Jane</span> <span class="n">Smith</span>
+
+<span class="o">*</span>   <span class="n">Questions</span> <span class="n">answered</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span>
+<span class="o">*</span>   <span class="n">Helped</span> <span class="k">with</span> <span class="n">editing</span> <span class="k">on</span> <span class="n">answers</span> <span class="mi">8</span> <span class="k">and</span> <span class="mi">9</span>
+<span class="o">*</span>   <span class="n">Collaborated</span> <span class="k">with</span> <span class="k">group</span> <span class="n">member</span> <span class="n">Jack</span> <span class="n">Williams</span> <span class="k">on</span> <span class="n">answering</span> <span class="n">question</span> <span class="mi">10</span>
+<span class="o">*</span>   <span class="n">Pointed</span> <span class="k">out</span> <span class="n">spelling</span> <span class="n">errors</span> <span class="k">and</span> <span class="n">suggested</span> <span class="n">fixes</span> <span class="k">to</span> <span class="n">the</span> <span class="n">document</span> <span class="n">layout</span> <span class="k">in</span> <span class="n">the</span> <span class="n">merged</span> <span class="k">group</span> <span class="n">document</span>
+</pre></div>
+
+
+<h3>Working with a GitHub repository as a&nbsp;group</h3>
+<p>You will likely encounter some issues while working in a group-based GitHub repository.
+In particular, you might find that when you click <em>&#8220;Push&#8221;</em> in the <strong>Git</strong> tab of RStudio, that it doesn&#8217;t seem to work and instead you get an annoying error message! This will happen when another member of your group has uploaded work before you did.
+While this can be irritating to deal with, this is actually a good thing, as it is GitHub&#8217;s way of protecting your files from accidential overwrites and&nbsp;deletions.</p>
+<p>So what should you do to keep things running smoothly?
+First, <strong>always</strong> work in your own file, never in another person&#8217;s file.
+If you are not the editor, then you should not edit [homework_1.Rmd]{.monospace} either!
+Also, do not remove or rename any files that are not your own.
+Finally, when you are getting ready to work, following the procedure below should help keep the error messages to a&nbsp;minimum:</p>
+<ol>
+<li>
+<p>When you start working, you should begin by going to the <strong>Git</strong> tab and clicking <em>&#8220;Pull&#8221;</em> (notice this is not the same as <em>&#8220;Push&#8221;</em>).
+    This will synchronize any new changes that your group may have made into your&nbsp;files.</p>
+</li>
+<li>
+<p>Work on your file as normal.
+    When you have completed your work, save your&nbsp;file.</p>
+</li>
+<li>
+<p>Now we want to commit.
+    <strong>But first</strong>, go to the <strong>Git</strong> tab and click <em>&#8220;Pull&#8221;</em> one more time to check for any other changes.
+    Then, still in the <strong>Git</strong> tab, click the checkmark next to your updated file, type a message in the messagebox, and click the <strong>Commit</strong>&nbsp;button.</p>
+</li>
+<li>
+<p>If the updated file is no longer in the list of files in the <strong>Git</strong> tab, then your commit was&nbsp;successful.</p>
+</li>
+<li>
+<p>Click <em>&#8220;Push&#8221;</em> to upload your changed&nbsp;file.</p>
+</li>
+</ol>
+<h4>If the above advice doesn&#8217;t&nbsp;work&#8230;</h4>
+<p>If, even after following the advice below, you still encounter error messages when Pulling from and Pushing to GitHub, contact the course instructor for&nbsp;help.</p>
+<h3>How to&nbsp;submit</h3>
+<p>The editor should follow the steps below to submit the homework for his/her&nbsp;group.</p>
+<ol>
+<li>
+<p>Make sure that everyone has committed and pushed their R Markdown files so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view all the completed files on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your group&#8217;s R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Homework 1</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>The rail trail&nbsp;dataset</h2>
+<p><img src="/img/mass-central-logo.jpg" title="plot of chunk mass-central-logo" alt="plot of chunk mass-central-logo" width="300px" style="display: block; margin: auto;" /></p>
+<p>For this homework assignment, you will be working though a set of visualization problems based on the [rail_trail]{.monospace} dataset.
+The [rail_trail]{.monospace} dataset was collected by the Pioneer Valley Planning Commission (<span class="caps">PVPC</span>) and counts the number of people that walked through a sensor on a <em>rail trail</em> during a ninety day period.
+<a href="https://wikipedia.org/wiki/Rail_trail">A <em>rail trail</em> is a retired or abandoned railway that was converted into a walking trail</a>.
+The data was collected from April 5, 2005 to November 15, 2005 using a laser sensor placed at a location north of Chestnut Street in Florence, <span class="caps">MA</span>.</p>
+<p><img src="/img/florence-chestnut-street-rail-trail.png" title="plot of chunk florence-ma-chestnut" alt="plot of chunk florence-ma-chestnut" width="50%" style="display: block; margin: auto;" /></p>
+<p>The dataset contains the following&nbsp;variables:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Variable</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" class="monospace">[hightemp]</td>
+<td align="left">daily high temperature (in degrees Fahrenheit)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[lowtemp]</td>
+<td align="left">daily low temperature (in degrees Fahrenheit)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[avgtemp]</td>
+<td align="left">average of daily low and daily high temperature (in degrees Fahrenheit)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[season]</td>
+<td align="left">indicates whether the season was Spring, Summer, or Fall</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[cloudcover]</td>
+<td align="left">measure of cloud cover (in oktas)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[precip]</td>
+<td align="left">measure of precipitation (in inches)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[volume]</td>
+<td align="left">estimated number of trail users that day (number of breaks recorded)</td>
+</tr>
+<tr>
+<td align="left" class="monospace">[weekday]</td>
+<td align="left">indicator of whether the day was a non-holiday weekday</td>
+</tr>
+</tbody>
+</table>
+<h2>How to describe your&nbsp;visualizations</h2>
+<p>When describing the contents of a visualization, follow the ideas discussed in these&nbsp;resources:</p>
+<ul>
+<li>
+<p><a href="http://book.cds101.com/describing-numerical-data.html"><em>Describing univariate and bivariate&nbsp;data</em></a></p>
+</li>
+<li>
+<p><a href="https://drive.google.com/file/d/1KiY4qavGUf3gMQF5rg1cR5HzmaI9i0dQ"><em>Data visualization - Examining numerical data</em>&nbsp;slides</a></p>
+</li>
+</ul>
+<h2>Questions</h2>
+<p>@describe-dataset.
+    In the [rail_trail]{.monospace} dataset, how many rows are there?
+    How many columns?
+    Which variables in the dataset are continuous/numerical and which are&nbsp;categorical?</p>
+<p>@volume-histogram.
+    Create a histogram of the variable <code>volume</code> using the following&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="ss">```r</span>
+<span class="ss">ggplot(data = rail_trail) +</span>
+<span class="ss">  geom_histogram(mapping = aes(x = volume))</span>
+<span class="ss">```</span>
+
+<span class="k">Describe</span> <span class="n">the</span> <span class="o">*</span><span class="n">shape</span><span class="o">*</span> <span class="k">and</span> <span class="o">*</span><span class="n">center</span><span class="o">*</span> <span class="n">of</span> <span class="n">the</span> <span class="n">distribution</span><span class="p">.</span>
+<span class="n">Afterward</span><span class="p">,</span> <span class="n">try</span> <span class="n">adjusting</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">histogram</span> <span class="n">bins</span> <span class="k">by</span> <span class="n">adding</span> <span class="n">the</span> <span class="ss">`binwidth`</span> <span class="n">input</span><span class="p">.</span>
+<span class="k">To</span> <span class="n">start</span> <span class="k">with</span><span class="p">,</span> <span class="k">use</span> <span class="ss">`binwidth = 21`</span><span class="p">.</span>
+<span class="k">If</span> <span class="n">you</span> <span class="n">need</span> <span class="n">help</span> <span class="k">with</span> <span class="k">where</span> <span class="k">to</span> <span class="n">place</span> <span class="ss">`binwidth`</span><span class="p">,</span> <span class="k">read</span> <span class="n">the</span> <span class="n">documentation</span> <span class="k">by</span> <span class="n">running</span> <span class="ss">`?geom_histogram`</span> <span class="k">in</span> <span class="n">your</span> <span class="o">*</span><span class="n">Console</span><span class="o">*</span> <span class="n">window</span><span class="p">.</span>
+<span class="k">Then</span><span class="p">,</span> <span class="n">find</span> <span class="n">a</span> <span class="n">binwidth</span> <span class="n">that</span><span class="s1">&#39;s too narrow and another one that&#39;</span><span class="n">s</span> <span class="n">too</span> <span class="n">wide</span> <span class="k">to</span> <span class="n">produce</span> <span class="n">a</span> <span class="n">meaningful</span> <span class="n">histogram</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@density-plot.
+    Choosing a proper bin width for a histogram can be tricky, and for that reason it&#8217;s preferable to use visualizations that avoid using bin widths when possible.
+    An easy-to-use alternative to the histogram is <code>geom_density</code>, which creates a <strong>density plot</strong>.
+    Use <code>geom_density</code> to create a density plot of the variable <code>volume</code>.</p>
+<p>@remaining-histograms.
+    Create a density plot for each of the remaining numerical variables, and describe the <em>shape</em> and <em>center</em> of each distribution.
+    Are there any distributions that are similar in <em>shape</em> to each&nbsp;other?</p>
+<p>@scatter-plots.
+    Use <code>geom_point()</code> to create a scatterplot that plots <code>weekday</code> versus <code>season</code>.
+    Why is this plot not&nbsp;useful?</p>
+<p>@mosaic-plots.
+    Create a <code>geom_count()</code> plot (an alternative to a mosaic plot) using the same variables you considered in question&nbsp;@scatter-plots:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="k">data</span> <span class="o">=</span> <span class="n">rail_trail</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_count</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">season</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">weekday</span><span class="p">))</span>
+<span class="o">```</span>
+
+<span class="n">Which</span> <span class="n">circle</span> <span class="k">in</span> <span class="n">the</span> <span class="n">plot</span> <span class="n">takes</span> <span class="n">up</span> <span class="n">the</span> <span class="n">most</span> <span class="n">area</span><span class="o">?</span>
+<span class="k">Explain</span> <span class="n">the</span> <span class="n">meaning</span> <span class="k">of</span> <span class="n">the</span> <span class="n">different</span> <span class="k">size</span> <span class="n">circles</span> <span class="k">in</span> <span class="n">the</span> <span class="n">plot</span> <span class="k">and</span> <span class="n">what</span> <span class="n">information</span> <span class="n">it</span> <span class="k">contains</span> <span class="n">that</span> <span class="k">is</span> <span class="n">missing</span> <span class="k">in</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">scatter</span> <span class="n">plot</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@bar-chart.
+    Run <code>?geom_bar</code> in the <em>Console</em> window and read the documentation for <code>geom_bar()</code>, and then look at the entry for it on the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">ggplot2 cheatsheet</a>
+    Use <code>geom_bar()</code> to reproduce the following bar&nbsp;chart:</p>
+<div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nt">img</span> <span class="nt">src</span><span class="o">=</span><span class="s2">&quot;{static}/img/seasons-bar-chart-1.svg&quot;</span> <span class="nt">title</span><span class="o">=</span><span class="s2">&quot;plot of chunk seasons-bar-chart&quot;</span> <span class="nt">alt</span><span class="o">=</span><span class="s2">&quot;plot of chunk seasons-bar-chart&quot;</span> <span class="nt">width</span><span class="o">=</span><span class="s2">&quot;70%&quot;</span> <span class="nt">style</span><span class="o">=</span><span class="s2">&quot;display: block; margin: auto;&quot;</span> <span class="o">/&gt;</span>
+
+<span class="nt">After</span> <span class="nt">reproducing</span> <span class="nt">the</span> <span class="nt">plot</span><span class="o">,</span> <span class="nt">explain</span> <span class="nt">what</span> <span class="nt">the</span> <span class="nt">height</span> <span class="nt">of</span> <span class="nt">each</span> <span class="nt">bar</span> <span class="nt">means</span><span class="o">.</span>
+</pre></div>
+
+
+<p>@bar-chart-position.
+    Starting from the code snippet you deduced in question @bar-chart, create two more bar&nbsp;charts:</p>
+<div class="highlight"><pre><span></span><span class="o">*</span>   <span class="k">Create</span> <span class="n">a</span> <span class="n">bar</span> <span class="n">chart</span> <span class="k">by</span> <span class="n">supplying</span> <span class="n">the</span> <span class="n">input</span> <span class="ss">`position = &quot;dodge&quot;`</span> <span class="k">to</span> <span class="ss">`geom_bar()`</span>
+
+<span class="o">*</span>   <span class="k">Create</span> <span class="n">a</span> <span class="n">bar</span> <span class="n">chart</span> <span class="k">by</span> <span class="n">supplying</span> <span class="n">the</span> <span class="n">input</span> <span class="ss">`position = &quot;fill&quot;`</span> <span class="k">to</span> <span class="ss">`geom_bar()`</span><span class="p">.</span>
+
+<span class="n">After</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">visualizations</span><span class="p">,</span> <span class="k">describe</span> <span class="n">the</span> <span class="n">feature</span> <span class="n">that</span> <span class="ss">`position`</span> <span class="n">controls</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@precip-bar-chart.
+    Create a bar chart that maps its aesthetic <code>aes()</code> to <code>precip &gt; 0</code>.
+    Interpret what this bar chart&nbsp;means.</p>
+<p>@vol-vs-hightemp.
+    Create a scatter plot of <code>volume</code> versus <code>hightemp</code> using <code>geom_point()</code>.
+    Describe any trends that you&nbsp;see.</p>
+<p>@facet-vs-color-aes.
+    Take the code snippet you wrote for question @vol-vs-hightemp and map the <code>weekday</code> variable to <code>color</code>.
+    Then create a second plot where, instead of mapping <code>weekday</code> to <code>color</code>, you <em>facet</em> over <code>weekday</code> using either <code>facet_wrap()</code> or <code>facet_grid()</code>.
+    Discuss the advantages and disadvantages to faceting instead of mapping to the <code>color</code> aesthetic.
+    How might the balance change if you had a larger&nbsp;dataset?</p>
+<p>@using-smooth.
+    Take the code snippet that you wrote down in question @facet-vs-color-aes that faceted over <code>weekday</code> and create a model for each facet panel using <code>geom_smooth()</code>.
+    Discuss the trends in the number of rail trail users that <code>geom_smooth()</code> picks&nbsp;up.</p>
+<p>@smooth-se-option.
+    Copy the code snippet you deduced in question @using-smooth and use the input <code>se = FALSE</code> for <code>geom_smooth()</code>.
+    What does the <code>se</code> input option for <code>geom_smooth()</code> control?</p>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;mini-homework:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">RMarkdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">RMarkdown&nbsp;reference</a></p>
+</li>
+</ul>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

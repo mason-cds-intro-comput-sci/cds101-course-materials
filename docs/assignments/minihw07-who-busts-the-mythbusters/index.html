@@ -1,0 +1,455 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Mini-homework 7 – Who busts the&nbsp;Mythbusters?</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the mini-homework, which contains a starter file named [mythbusters.Rmd]{.monospace}.
+This mini-homework will guide you through examples demonstrating how to conduct hypothesis tests and calculate confidence intervals using the [infer]{.monospace} package.
+Read the <a href="#about-the-dataset">About the dataset</a> section to get some background information on the dataset that you&#8217;ll be working with.
+Each of the below <a href="#exercises">exercises</a> are to be completed in the provided spaces within your starter file [mythbusters.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <strong><a href="#how-to-submit">How to submit</a></strong> section&nbsp;below.</p>
+<h2>About the&nbsp;dataset</h2>
+<p>The dataset we are using in this mini-homework comes from an experiment shown on an episode of the <em>Mythbusters</em> television show<sup id="fnref:mythbusters-ep-info"><a class="footnote-ref" href="#fn:mythbusters-ep-info">1</a></sup>, a science entertainment <span class="caps">TV</span> program that aired on the Discovery Channel.
+The show&#8217;s build team, Kari Byron, Scottie Chapman, and Tory Belleci, conducted the experiment in order to test the following&nbsp;hypothesis,</p>
+<blockquote>
+<p>It becomes more likely for a person to yawn if another person near them&nbsp;yawns.</p>
+</blockquote>
+<p>To conduct the experiment, the team drove 50 volunteers, one at a time, to a flea market in a van, and one of the team members, would either yawn (treatment) or not yawn (no treatment) during the ride.
+It was randomly determined ahead of time whether or not Kari yawned.
+Therefore, the 50 people were split into two randomly assigned&nbsp;groups:</p>
+<ul>
+<li>
+<p><strong>Treatment group:</strong> 34 people where a person near them&nbsp;yawned</p>
+</li>
+<li>
+<p><strong>Control group:</strong> 16 people where there wasn&#8217;t a person yawning near&nbsp;them</p>
+</li>
+</ul>
+<p>The results of the experiment are presented in the following&nbsp;table,</p>
+<table class="table" style="width: auto !important; ">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> group </th>
+   <th style="text-align:right;"> yawns </th>
+   <th style="text-align:right;"> total </th>
+   <th style="text-align:right;"> fraction_yawned </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Control </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 0.2500 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Treatment </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:right;"> 0.2941 </td>
+  </tr>
+</tbody>
+</table>
+
+<p>They concluded that the myth was confirmed because there was a 4% increase in yawns between the control and treatment groups.
+However, their analysis did not appear to include a formal hypothesis test, nor did the team discuss how likely it was that random chance alone could generate their results.
+Without this kind of analysis, we can not meaningfully determine whether the data supports the conclusion that yawning is&nbsp;contagious.</p>
+<p>Our main activity in this mini-homework will be fact-checking the Mythbusters by carrying out a formal hypothesis test using the [infer]{.monospace} package.
+This will allow us to assess how likely it is that a random chance model could generate the observed experimental results and whether or not the collected data allow us to infer the same conclusion as the <em>Mythbusters</em> build&nbsp;team.</p>
+<p>The dataset [yawn]{.monospace} contains 3 variables and 50&nbsp;rows,</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="monospace">[subject_id]</td>
+<td>Integer uniquely identifying an experiment volunteer</td>
+</tr>
+<tr>
+<td class="monospace">[yawn]</td>
+<td>Whether or not a volunteer yawned, <em>yes</em> if he/she did, <em>no</em> if he/she did not</td>
+</tr>
+<tr>
+<td class="monospace">[group]</td>
+<td>Specifies if the volunteer was part of the <em>Control</em> group or the <em>Treatment</em> group</td>
+</tr>
+</tbody>
+</table>
+<h2>Exercises</h2>
+<p>@explanatory-response-variables.
+    Whenever we conduct an experiment, we need to know what variable we will change between the treatment and control groups, and what the kinds of outcomes we will be measuring.
+    Look again as the three variables for this experiment.
+    Which one is the <strong>explanatory</strong> variable and which one is the <strong>response</strong> variable?
+    What value in the <strong>response</strong> value should be classified as a&nbsp;success? </p>
+<p>@hypothesis-test-quantity.
+    To conduct the hypothesis test, we need to simulate the null distribution.
+    The null distribution represents the range of outcomes for this experiment if yawning has no effect on the treatment group and is due to random chance alone.
+    To generate a null distribution we need to know how the observed experimental result was calculated, as we will need to repeat this same calculation during our simulations.
+    Review the results table in the <a href="#about-the-dataset">About the dataset</a> section again.
+    What quantity should we use or compute in order to build the null distribution?
+    Choose the correct answer&nbsp;below.</p>
+<div class="highlight"><pre><span></span><span class="mf">1.</span><span class="w">  </span><span class="o">*</span><span class="n">The</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="o">[</span><span class="n">yawns</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">treatment</span><span class="w"> </span><span class="k">group</span><span class="o">*</span><span class="w"></span>
+
+<span class="mf">2.</span><span class="w">  </span><span class="o">*</span><span class="n">The</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="o">[</span><span class="n">fraction_yawned</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">treatment</span><span class="w"> </span><span class="k">group</span><span class="o">*</span><span class="w"></span>
+
+<span class="mf">3.</span><span class="w">  </span><span class="o">*</span><span class="n">The</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="nf">difference</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">[</span><span class="n">yawns</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">treatment</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="n">groups</span><span class="o">*</span><span class="w"></span>
+
+<span class="mf">4.</span><span class="w">  </span><span class="o">*</span><span class="n">The</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="nf">difference</span><span class="w"> </span><span class="ow">in</span><span class="w">  </span><span class="o">[</span><span class="n">fraction_yawned</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">treatment</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">control</span><span class="w"> </span><span class="n">groups</span><span class="o">*</span><span class="w"></span>
+</pre></div>
+
+
+<p>@specify-values.
+    Running a hypothesis test for this dataset requires us to fill in the following code template that contains four functions from the [infer]{.monospace}&nbsp;package,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">yawn_null</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yawn</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">specify</span><span class="p">(</span><span class="o">&lt;</span><span class="n">variable1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">&lt;</span><span class="n">variable2</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hypothesize</span><span class="p">(</span><span class="k">null</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">generate</span><span class="p">(</span><span class="n">reps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">calculate</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w">  </span><span class="k">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">We</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="n">filling</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">template</span><span class="w"> </span><span class="k">over</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="n">few</span><span class="w"> </span><span class="n">questions</span><span class="p">.</span><span class="w"></span>
+
+<span class="n">We</span><span class="w"> </span><span class="k">start</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="err">`</span><span class="n">specify</span><span class="p">()</span><span class="err">`</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="k">structure</span><span class="p">,</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">specify</span><span class="p">(</span><span class="o">&lt;</span><span class="n">variable1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">&lt;</span><span class="n">variable2</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">\&lt;variable1\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;variable2\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;...&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">placeholders</span><span class="p">.</span><span class="w"></span>
+<span class="k">Using</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">answers</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">Exercise</span><span class="w"> </span><span class="nv">@explanatory</span><span class="o">-</span><span class="n">response</span><span class="o">-</span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="n">figure</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">three</span><span class="w"> </span><span class="n">placeholders</span><span class="p">.</span><span class="w"></span>
+<span class="n">You</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">write</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="n">specify</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">function</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="k">primary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Hint</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">special</span><span class="w"> </span><span class="n">formula</span><span class="w"> </span><span class="n">syntax</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;variable1\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;variable2\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span><span class="w"></span>
+<span class="n">The</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">left</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">tilde</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;variable1\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="n">The</span><span class="w"> </span><span class="n">word</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">right</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">tilde</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;variable2\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"> </span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@hypothesize-values.
+    The next step in our code template for generating a null hypothesis is the <code>hypothesize()</code> function,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">hypothesize</span><span class="p">(</span><span class="k">null</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">This</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="k">input</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">choices</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">use</span><span class="p">.</span><span class="w"> </span><span class="n">What</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="k">use</span><span class="vm">?</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="n">secondary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Values for [null</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}]{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">  </span><span class="o">[</span><span class="n">&quot;independence&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="k">both</span><span class="w"> </span><span class="n">refer</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dataset</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">  </span><span class="o">[</span><span class="n">&quot;point&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">compare</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">against</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">reported</span><span class="w"> </span><span class="n">point</span><span class="w"> </span><span class="n">estimate</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">median</span><span class="p">).</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@generate-values.
+    The third step in our code template is the <code>generate()</code> function,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">generate</span><span class="p">(</span><span class="n">reps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">We</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">reps</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">many</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">trials</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">generate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">distribution</span><span class="p">.</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">equal</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">integer</span><span class="w"> </span><span class="k">value</span><span class="p">.</span><span class="w"></span>
+<span class="n">The</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">trials</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">run</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">accurate</span><span class="w"> </span><span class="n">our</span><span class="w"> </span><span class="n">simulated</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">outcomes</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="p">,</span><span class="w"> </span><span class="n">although</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">our</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">longer</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="p">.</span><span class="w"></span>
+<span class="n">The</span><span class="w"> </span><span class="o">[</span><span class="n">type</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">keyword</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">choose</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="p">.</span><span class="w"></span>
+
+<span class="n">Generating</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">distribution</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">dataset</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">our</span><span class="w"> </span><span class="n">outcomes</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="ow">like</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="k">no</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="w"></span>
+<span class="k">If</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="mi">000</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">distribution</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">dataset</span><span class="p">,</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="nf">replace</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">placeholders</span><span class="w"> </span><span class="k">with</span><span class="vm">?</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="n">secondary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Values for [type</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}]{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">There</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">three</span><span class="w"> </span><span class="n">choices</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">[</span><span class="n">type</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;bootstrap&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">randomly</span><span class="w"> </span><span class="n">sampling</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="o">*</span><span class="k">with</span><span class="w"> </span><span class="n">replacement</span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">dataset</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">The</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">different</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">preserved</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;permute&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">randomly</span><span class="w"> </span><span class="n">shuffling</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cells</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="n">variables</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">This</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="n">shuffling</span><span class="w"> </span><span class="k">procedure</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">separately</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">column</span><span class="p">,</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">different</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">preserved</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;simulate&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">flipping</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">weighted</span><span class="w"> </span><span class="n">coin</span><span class="p">,</span><span class="w"> </span><span class="n">meaning</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">heads</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">tails</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">equally</span><span class="w"> </span><span class="n">probable</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">coin</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">unfair</span><span class="p">).</span><span class="w"></span>
+<span class="w">    </span><span class="n">This</span><span class="w"> </span><span class="n">coin</span><span class="p">,</span><span class="w"> </span><span class="n">being</span><span class="w"> </span><span class="n">virtual</span><span class="p">,</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="k">than</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">sides</span><span class="p">,</span><span class="w"> </span><span class="n">meaning</span><span class="w"> </span><span class="n">there</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">several</span><span class="w"> </span><span class="n">discrete</span><span class="w"> </span><span class="n">outcomes</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">certain</span><span class="w"> </span><span class="n">probabilities</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">happening</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">This</span><span class="w"> </span><span class="o">[</span><span class="n">type</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">typically</span><span class="w"> </span><span class="n">needed</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="o">[</span><span class="n">null = &quot;point&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">`</span><span class="n">hypothesize</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">categorical</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@calculate-values.
+    The last step in our code template is the <code>calculate()</code> function,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">calculate</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w">  </span><span class="k">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="o">[</span><span class="n">stat</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">exactly</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">we</span><span class="err">&#39;</span><span class="n">re</span><span class="w"> </span><span class="n">calculating</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">mirror</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">observed</span><span class="w"> </span><span class="n">experimental</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">calculated</span><span class="p">.</span><span class="w"></span>
+<span class="n">The</span><span class="w"> </span><span class="k">second</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">[</span><span class="n">order</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">specifies</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">subtraction</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="w"> </span><span class="n">listed</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">**</span><span class="n">explanatory</span><span class="o">**</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+
+<span class="n">Based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">question</span><span class="w"> </span><span class="nv">@hypothesis</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">quantity</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">information</span><span class="p">,</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="nf">replace</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">placeholders</span><span class="w"> </span><span class="k">with</span><span class="vm">?</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="n">secondary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Values for [stat</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}]{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">available</span><span class="w"> </span><span class="n">choices</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">[</span><span class="n">stat</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">follows</span><span class="p">,</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;mean&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="k">Compute</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">trial</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;median&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">Find</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">median</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">trial</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;sum&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="k">Compute</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">sum</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">trial</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;sd&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="k">Compute</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">standard</span><span class="w"> </span><span class="n">deviation</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">simulation</span><span class="w"> </span><span class="n">trial</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;prop&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Count</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">successes</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">convert</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">fraction</span><span class="w"> </span><span class="p">(</span><span class="n">proportion</span><span class="p">).</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;count&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">simulations</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="nf">Count</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">successes</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;diff in means&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">Subtract</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">means</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;diff in medians&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Find</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">median</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">Subtract</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">medians</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;diff in props&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">successes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">*</span><span class="n">categorical</span><span class="o">*</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">convert</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">fraction</span><span class="w"> </span><span class="p">(</span><span class="n">proportion</span><span class="p">)</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">*</span><span class="n">categorical</span><span class="o">*</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">Subtract</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">fractions</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;Chisq&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">chi</span><span class="o">-</span><span class="n">squared</span><span class="w"> </span><span class="n">statistic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">both</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">contain</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">groups</span><span class="w"> </span><span class="k">each</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;F&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">*</span><span class="n">F</span><span class="o">*</span><span class="w"> </span><span class="n">statistic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">groups</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;t&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="o">-</span><span class="n">sample</span><span class="w"> </span><span class="n">t</span><span class="o">-</span><span class="n">test</span><span class="w"> </span><span class="n">statistic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">similar</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;diff in means&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">calculation</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;z&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="o">-</span><span class="n">sample</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="n">statistic</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">numerical</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">groups</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">It</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">assumed</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">samples</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">dataset</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">large</span><span class="p">,</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;t&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">preferred</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">similar</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;diff in means&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">calculation</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;slope&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">slope</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="n">regression</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">both</span><span class="w"> </span><span class="n">numerical</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="o">[</span><span class="n">&quot;correlation&quot;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}:</span><span class="w"> </span><span class="n">Calculate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">correlation</span><span class="w"> </span><span class="n">coefficient</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">both</span><span class="w"> </span><span class="n">numerical</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@null-distribution.
+    Take your answers to questions @specify-values through @calculate-values and combine them to fill in the&nbsp;template,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">yawn_null</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yawn</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">specify</span><span class="p">(</span><span class="n">formula</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="n">variable1</span><span class="o">&gt;</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">&lt;</span><span class="n">variable2</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hypothesize</span><span class="p">(</span><span class="k">null</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">generate</span><span class="p">(</span><span class="n">reps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">calculate</span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w">  </span><span class="k">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="ss">&quot;...&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;...&quot;</span><span class="p">))</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">This</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">simulate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">distribution</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">yawn</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">experiment</span><span class="p">.</span><span class="w"></span>
+<span class="n">This</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">few</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">RStudio</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@one-sided-test.
+    Now that we have a simulated null distribution, let&#8217;s quantify how likely it is that a random chance model would generate the Mythbuster&#8217;s experimental result.
+    We will do this by computing the <em>p</em>-value of a <strong>one-sided hypothesis test</strong>, which is just the probability that the result of a simulation trial is the same or more extreme than the experimental result.
+    We will also assume a significance level of $\alpha = 0.05$.
+    <strong>If our <em>p</em>-value is less than $\alpha = 0.05$</strong>, then we will conclude that we have sufficient evidence to reject the null hypothesis in favor of the alternative&nbsp;hypothesis.</p>
+<div class="highlight"><pre><span></span><span class="k">First</span><span class="p">,</span><span class="w"> </span><span class="n">let</span><span class="s1">&#39;s use [infer]{.monospace} to compute the experimental result for comparison with the null distribution.</span>
+<span class="s1">Fill in the template below with the values you determined for `specify()` and `calculate()`,</span>
+
+<span class="s1">```r</span>
+<span class="s1">yawn_obs_stat &lt;- yawn %&gt;%</span>
+<span class="s1">  specify(formula = &lt;variable1&gt; ~ &lt;variable2&gt;, success = &quot;...&quot;) %&gt;%</span>
+<span class="s1">  calculate(stat = &quot;...&quot;,  order = combine(&quot;...&quot;, &quot;...&quot;))</span>
+<span class="s1">```</span>
+
+<span class="s1">Notice that we just took the template from Exercise @null-distribution and removed the `hypothesize()` and `generate()` lines.</span>
+
+<span class="s1">Next, if we wanted to compute the *p*-value manually, we would need to count how many simulations gave us a result that was the same or more extreme than the experimental result and then divide by 10,000, which is the total number of simulations we ran.</span>
+<span class="s1">Lucky for us, the [infer]{.monospace} package has a convenience function, `get_p_value()`, for calculating p-values so that we don&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">manually</span><span class="p">.</span><span class="w"></span>
+<span class="k">To</span><span class="w"> </span><span class="k">compute</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">*</span><span class="n">p</span><span class="o">*-</span><span class="k">value</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">one</span><span class="o">-</span><span class="n">sided</span><span class="w"> </span><span class="n">hypothesis</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">run</span><span class="p">,</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">yawn_null</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">get_p_value</span><span class="p">(</span><span class="n">obs_stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yawn_obs_stat</span><span class="p">,</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;right&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">To</span><span class="w"> </span><span class="n">visualize</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">outcomes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">distribution</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">extreme</span><span class="w"> </span><span class="k">than</span><span class="w"> </span><span class="o">[</span><span class="n">yawn\_obs\_stat</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">run</span><span class="p">,</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">yawn_null</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">visualize</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">  </span><span class="n">shade_p_value</span><span class="p">(</span><span class="n">obs_stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yawn_obs_stat</span><span class="p">,</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;right&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">significance</span><span class="w"> </span><span class="k">level</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="err">$\</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="err">$</span><span class="p">,</span><span class="w"> </span><span class="n">conclude</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">have</span><span class="w"> </span><span class="n">sufficient</span><span class="w"> </span><span class="n">evidence</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">reject</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="n">hypothesis</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@two-sided-test.
+    It&#8217;s often prudent to run a <strong>two-sided hypothesis test</strong> instead of the one-sided version, as it is more strict and hence stronger evidence is needed before the $\alpha = 0.05$ significance threshold is crossed.
+    Switching from a one-sided test to a two-sided test simply requires that you replace [direction = &#8220;right&#8221;]{.monospace} with [direction = &#8220;both&#8221;]{.monospace} in <code>get_p_value()</code> and <code>shade_p_value()</code>.
+    Do this and compute the <em>p</em>-value and visualization for the two-sided hypothesis test.
+    Assuming a significance level of $\alpha = 0.05$, do we have sufficient evidence to reject the null&nbsp;hypothesis?</p>
+<p>@bootstrap-simulation.
+    Our final piece of analysis will be to compute a 95% confidence interval for the experimental result.
+    The 95% confidence interval represents a plausible range of values for the experimental result based on the variability of the dataset.
+    Computing this interval requires us to run a bootstrap simulation.
+    To do this, copy and paste your code from Exercise @null-distribution, delete the <code>hypothesize()</code> line, and change the [type]{.monospace} input in <code>generate()</code> to [type = &#8220;bootstrap&#8221;]{.monospace}.
+    A template is shown&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="n">```r</span>
+<span class="n">yawn_bootstrap &lt;- yawn %&gt;%</span>
+<span class="n">  specify(formula = &lt;variable1&gt; ~ &lt;variable2&gt;, success = &quot;...&quot;) %&gt;%</span>
+<span class="n">  generate(reps = ..., type = &quot;bootstrap&quot;) %&gt;%</span>
+<span class="n">  calculate(stat = &quot;...&quot;, order = combine(&quot;...&quot;, &quot;...&quot;))</span>
+<span class="n">```</span>
+</pre></div>
+
+
+<p>@confidence-interval.
+    We obtain the 95% confidence interval by running the following&nbsp;code,</p>
+<div class="highlight"><pre><span></span><span class="n">```r</span>
+<span class="n">yawn_ci &lt;- yawn_bootstrap %&gt;%</span>
+<span class="n">  get_confidence_interval()</span>
+<span class="n">```</span>
+
+<span class="n">To</span> <span class="n">visualize</span> <span class="n">the</span> <span class="m">95</span><span class="o">% confidence interval, we run the following code,</span>
+
+<span class="o">```r</span>
+<span class="o">yawn_bootstrap %&gt;%</span>
+<span class="o">  visualize() +</span>
+<span class="o">  shade_confidence_interval(yawn_ci)</span>
+<span class="o">```</span>
+
+<span class="o">After computing and visualizing the confidence interval, **choose the statement that correctly interprets what it means**,</span>
+
+<span class="o">1.  *People in this sample, on average, yawn approximately 23%</span> <span class="n">less</span> <span class="n">to</span> <span class="m">30</span><span class="o">% more of the time when someone near them yawns.*</span>
+
+<span class="o">2.  *People will, on average, yawn 23%</span> <span class="n">less</span> <span class="n">to</span> <span class="m">30</span><span class="o">% more when someone near them yawns.*</span>
+
+<span class="o">3.  *A randomly chosen person yawns 23%</span> <span class="n">less</span> <span class="n">to</span> <span class="m">30</span><span class="o">% more when someone near them yawns.*</span>
+
+<span class="o">4.  *95%</span> <span class="n">of</span> <span class="n">people</span> <span class="n">yawn</span> <span class="m">23</span><span class="o">% less to 30%</span> <span class="n">more</span> <span class="n">when</span> <span class="n">someone</span> <span class="n">near</span> <span class="n">them</span> <span class="n">yawns.</span><span class="o">*</span>
+</pre></div>
+
+
+<h2>How to&nbsp;submit</h2>
+<p>To submit your mini-homework, follow the two steps below.
+Your homework will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Mini-homework 7</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;mini-homework:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">dplyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:mythbusters-ep-info">
+<p>Season 3, Episode 28, <em>Is Yawning Contagious?</em>, first aired on March 9, 2005.&#160;<a class="footnote-backref" href="#fnref:mythbusters-ep-info" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

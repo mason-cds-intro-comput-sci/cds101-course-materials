@@ -1,0 +1,384 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Lab 03 – Wrangling sales&nbsp;data</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the lab, which contains a starter file named [lab03.Rmd]{.monospace}.
+This lab introduces you to data transformations using the [dplyr]{.monospace} library, which is loaded as part of [tidyverse]{.monospace}.
+Carefully read the lab instructions and complete the exercises using the provided spaces within your starter file [lab03.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <a href="#how-to-submit"><i class="fas fa-link"></i>How to submit</a> section&nbsp;below.</p>
+<h2>What is data&nbsp;wrangling?</h2>
+<p><a href="/labs/lab-02-exploration-by-visualization-the-galton-dataset/"><i class="fas fa-link"></i>Lab 2</a> focused on constructing visualizations using the [ggplot2]{.monospace} library.
+The dataset used for that lab, the [galton]{.monospace} dataset, was selected because it was relatively small in size and could be visualized in interesting ways without the need for additional processing.
+It would certainly be nice if all datasets came in such a form!
+However, in reality, many datasets need to be cleaned, reshaped, and transformed before you can use them to create meaningful visualizations and answer interesting questions.
+Even datasets that have been preprocessed to be clean and tidy may still require you to apply transformations to help uncover the underlying trends in the data.
+The full pipeline for obtaining data, cleaning it up, and transforming it is informally referred to as <em>data wrangling</em>, which is summarized in the following figure from <a href="http://r4ds.had.co.nz/wrangle-intro.html"><i class="fas fa-link"></i><em>R for Data Science</em></a>:</p>
+<p><img src="/img/r4ds_data_wrangling.png" title="plot of chunk data-wrangling-figure" alt="plot of chunk data-wrangling-figure" width="NA" style="display: block; margin: auto;" /></p>
+<p>This lab introduces you to functions from the [dplyr]{.monospace} package that you can use to carry out the <em>transform</em> part of the data wrangling pipeline.
+If you have any prior experience with spreadsheeting software such as Microsoft Excel, you will probably find the functions in the [dplyr]{.monospace} package to be&nbsp;familiar.</p>
+<h2>About the&nbsp;dataset</h2>
+<p>This is a synthetic dataset that contains sales data for office supplies sold to clients in different regions of the United&nbsp;States.</p>
+<p>The table below provides descriptions of the dataset&#8217;s 6&nbsp;variables,</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="monospace">[order_date]</td>
+<td>The date the office supplies order was placed</td>
+</tr>
+<tr>
+<td class="monospace">[region]</td>
+<td>Shipping region in United States</td>
+</tr>
+<tr>
+<td class="monospace">[representative]</td>
+<td>Name of sales representative</td>
+</tr>
+<tr>
+<td class="monospace">[item]</td>
+<td>Item ordered</td>
+</tr>
+<tr>
+<td class="monospace">[units]</td>
+<td>How many units of item were sold</td>
+</tr>
+<tr>
+<td class="monospace">[unit_price]</td>
+<td>Price per unit of item</td>
+</tr>
+</tbody>
+</table>
+<h2>Subsetting over&nbsp;variables</h2>
+<p>The [dplyr]{.monospace} package has many different functions in it and trying to understand them all at once can be a bit overwhelming.
+So instead of listing everything all at once, we will build up our intuition by practicing with one function at a time.
+Let&#8217;s start with the <code>select()</code> function, which allows you to <em>select</em> columns from a dataset.
+This is useful when you&#8217;re working with a dataset that contains dozens of variables and you want to make things more&nbsp;manageable.</p>
+<p>@select-column.
+    Try running the following&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="k">select</span><span class="p">(</span><span class="n">representative</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">output</span><span class="p">,</span><span class="w"> </span><span class="n">explain</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">happens</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w"></span>
+
+<span class="k">Try</span><span class="w"> </span><span class="n">putting</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">additional</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">parentheses</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="k">select</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="p">(</span><span class="n">don</span><span class="err">&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">forget</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">comma</span><span class="err">!</span><span class="p">).</span><span class="w"></span>
+<span class="n">What</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">do</span><span class="vm">?</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="k">primary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Note</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">strange</span><span class="w"> </span><span class="n">looking</span><span class="w"> </span><span class="n">symbol</span><span class="w"> </span><span class="o">[</span><span class="n">%&gt;%</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">**</span><span class="n">pipe</span><span class="o">**</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">handy</span><span class="w"> </span><span class="n">way</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dataset</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">chain</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">commands</span><span class="p">.</span><span class="w"></span>
+<span class="ow">All</span><span class="w"> </span><span class="n">examples</span><span class="w"> </span><span class="n">going</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">pipe</span><span class="w"> </span><span class="k">whenever</span><span class="w"> </span><span class="n">possible</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>There are multiple ways to specify columns with the <code>select()</code> command.
+Let&#8217;s explore a couple of those&nbsp;ways.</p>
+<p>@.
+    Copy the code you wrote in <strong>Exercise @select-column</strong> and replace [representative]{.monospace} with [representative:unit_price]{.monospace}.
+    What does the colon [:]{.monospace}&nbsp;do?</p>
+<div class="highlight"><pre><span></span><span class="nv">Next</span><span class="p">,</span> <span class="s s-Atom">try</span> <span class="s s-Atom">putting</span> <span class="s s-Atom">a</span> <span class="s s-Atom">minus</span> <span class="s s-Atom">sign</span> <span class="s s-Atom">in</span> <span class="s s-Atom">front</span> <span class="s s-Atom">of</span> <span class="s s-Atom">the</span> <span class="s s-Atom">column</span> <span class="s s-Atom">names</span><span class="p">,</span> <span class="s s-Atom">such</span> <span class="s s-Atom">as</span> <span class="p">[</span><span class="o">-</span><span class="s s-Atom">representative</span><span class="p">]{.</span><span class="s s-Atom">monospace</span><span class="p">}</span> <span class="s s-Atom">or</span> <span class="p">[</span><span class="o">-</span><span class="nn">representative</span><span class="p">:</span><span class="o">-</span><span class="s s-Atom">unit_price</span><span class="p">]{.</span><span class="s s-Atom">monospace</span><span class="p">}.</span>
+<span class="nv">How</span> <span class="s s-Atom">does</span> <span class="s s-Atom">the</span> <span class="s s-Atom">minus</span> <span class="s s-Atom">sign</span> <span class="s s-Atom">affect</span> <span class="s s-Atom">the</span> <span class="s s-Atom">output?</span>
+</pre></div>
+
+
+<h2>Sorting&nbsp;data</h2>
+<p>The sort operation is a common and indispensible operation for organizing data, and the function from [dplyr]{.monospace} that allows us to sort is called <code>arrange()</code>.
+<code>arrange()</code> sorts columns with textual data ([chr]{.monospace} data type) into alphabetical order and sorts numerical data into numerical&nbsp;order.</p>
+<p>@.
+    Run the following&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">arrange</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">output</span><span class="p">,</span><span class="w"> </span><span class="n">does</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="ow">like</span><span class="w"> </span><span class="k">both</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">region</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">item</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="n">were</span><span class="w"> </span><span class="n">sorted</span><span class="vm">?</span><span class="w"></span>
+<span class="n">Which</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">sorted</span><span class="w"> </span><span class="k">first</span><span class="vm">?</span><span class="w"></span>
+<span class="n">What</span><span class="w"> </span><span class="n">happens</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="nf">reverse</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">snippet</span><span class="vm">?</span><span class="w"></span>
+</pre></div>
+
+
+<p>By default, <code>arrange()</code> will sort data in ascending order.
+The function <code>desc()</code> can be used to sort in descending order, and we can mix-and-match which columns are ascending and which columns as&nbsp;descending.</p>
+<p>@.
+    Sort using the variable [order_date]{.monospace}.
+    Then, make a copy of the code block you just wrote and then wrap the column name with <code>desc()</code>, like so: <code>desc(order_date)</code>.
+    Verify that <code>desc()</code> sorted the data in the reverse&nbsp;order.</p>
+<div class="highlight"><pre><span></span><span class="n">Copy</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">starting</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">example</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">adapt</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="o">[</span><span class="n">region</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">sorted</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">*</span><span class="n">ascending</span><span class="o">*</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">item</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">sorted</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">*</span><span class="n">descending</span><span class="o">*</span><span class="w"> </span><span class="k">order</span><span class="p">.</span><span class="w"></span>
+<span class="k">Write</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">down</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">output</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>::: {.callout .secondary}&nbsp;[Important!]{.h4}</p>
+<p>Students often find that there is a <em>base R</em> function named <code>sort()</code> as well, leading to confusion later in the course.
+Using <code>sort()</code> the same way you use <code>arrange()</code> will give you errors.
+For the duration of course <strong>we will always prefer to use the [tidyverse]{.monospace} version of a function</strong>, so always use <code>arrange()</code> and pretend <code>sort()</code> doesn’t exist.&nbsp;:::</p>
+<h2>Transforming&nbsp;data</h2>
+<p>Let&#8217;s now try an example that uses the <code>mutate()</code> function, which is a little more complex.
+<code>mutate()</code> lets us <strong>transform</strong> our dataset by applying the same operation to each row in the dataset and storing the results in a <em>new</em> column.
+This would allow us, for example, to create a new column in the dataset called [total_price]{.monospace} that contains the toal price of each&nbsp;order.</p>
+<p>@.
+    To calculate the total price of an order, we need to multiply the number of units sold by the unit price across each row.
+    Do this by running the following <code>mutate()</code> command:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">office_supplies</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">total_price</span> <span class="o">=</span> <span class="n">units</span> <span class="o">*</span> <span class="n">unit_price</span><span class="p">)</span>
+<span class="o">```</span>
+
+<span class="k">After</span> <span class="n">confirming</span> <span class="n">that</span> <span class="n">the</span> <span class="n">above</span> <span class="n">command</span> <span class="n">works</span><span class="p">,</span> <span class="k">copy</span> <span class="n">this</span> <span class="n">code</span> <span class="k">into</span> <span class="n">a</span> <span class="k">new</span> <span class="n">code</span> <span class="n">block</span> <span class="k">and</span> <span class="n">remove</span> <span class="p">[</span><span class="n">total_price</span> <span class="o">=</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">from</span> <span class="n">the</span> <span class="k">function</span> <span class="k">input</span><span class="p">.</span>
+<span class="n">Does</span> <span class="n">the</span> <span class="n">code</span> <span class="n">still</span> <span class="n">run</span><span class="o">?</span>
+<span class="k">If</span> <span class="n">so</span><span class="p">,</span> <span class="n">what</span> <span class="p">(</span><span class="k">if</span> <span class="n">anything</span><span class="p">)</span> <span class="k">is</span> <span class="n">different</span> <span class="k">in</span> <span class="n">the</span> <span class="k">output</span><span class="o">?</span>
+<span class="n">What</span> <span class="k">if</span> <span class="n">you</span> <span class="n">used</span> <span class="o">`</span><span class="n">mutate</span><span class="p">(</span><span class="n">final_price</span> <span class="o">=</span> <span class="n">units</span> <span class="o">*</span> <span class="n">unit_price</span><span class="p">)</span><span class="o">`</span> <span class="k">instead</span><span class="o">?</span>
+
+<span class="n">Based</span> <span class="k">on</span> <span class="n">these</span> <span class="n">outputs</span><span class="p">,</span> <span class="k">describe</span> <span class="n">what</span> <span class="n">the</span> <span class="p">[</span><span class="n">total_price</span> <span class="o">=</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="n">part</span> <span class="k">of</span> <span class="n">the</span> <span class="n">command</span> <span class="n">seems</span> <span class="k">to</span> <span class="n">be</span> <span class="n">doing</span><span class="p">.</span>
+</pre></div>
+
+
+<p>We are not limited to only one input at a time in <code>mutate()</code>.
+As long as we separate each input by a comma, we can put as many inputs as we want in the <code>mutate()</code> function!</p>
+<p>@.
+    Starting again with this&nbsp;example,</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">office_supplies</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">total_price</span> <span class="o">=</span> <span class="n">units</span> <span class="o">*</span> <span class="n">unit_price</span><span class="p">)</span>
+<span class="o">```</span>
+
+<span class="k">modify</span> <span class="n">it</span> <span class="n">so</span> <span class="n">that</span> <span class="n">there</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">a</span> <span class="k">second</span> <span class="k">input</span> <span class="k">in</span> <span class="o">`</span><span class="n">mutate</span><span class="p">()</span><span class="o">`</span><span class="p">,</span> <span class="p">[</span><span class="n">shipping</span><span class="err">\</span><span class="n">_date</span> <span class="o">=</span> <span class="k">order</span><span class="err">\</span><span class="n">_date</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span>
+<span class="n">Does</span> <span class="n">this</span> <span class="k">add</span> <span class="n">another</span> <span class="k">column</span><span class="o">?</span>
+<span class="n">What</span> <span class="n">has</span> <span class="n">happened</span> <span class="k">by</span> <span class="n">adding</span> <span class="n">the</span> <span class="nb">number</span> <span class="mi">2</span> <span class="k">to</span> <span class="n">the</span> <span class="k">rows</span> <span class="k">in</span> <span class="n">the</span> <span class="p">[</span><span class="k">order</span><span class="err">\</span><span class="n">_date</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">column</span><span class="o">?</span>
+</pre></div>
+
+
+<h2>Immutable&nbsp;datasets</h2>
+<p>It&#8217;s worth pausing for a moment and asking whether any of these commands are permanently changing the way the dataset looks in [office_supplies]{.monospace}.
+Inspect your dataset by typing <code>View(office_supplies)</code> in the <em>Console</em> pane to&nbsp;check.</p>
+<p>@.
+    Based on what you observe, has each function we&#8217;ve run in the previous exercises changed the information in&nbsp;[office_supplies]{.monospace}?</p>
+<div class="highlight"><pre><span></span><span class="n">As</span> <span class="n">a</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">run</span> <span class="n">the</span> <span class="n">command</span><span class="p">,</span>
+
+<span class="n">```r</span>
+<span class="n">office_supplies_updated &lt;- mutate(office_supplies, total_price = units * unit_price)</span>
+<span class="n">```</span>
+
+<span class="n">Then</span><span class="p">,</span> <span class="n">create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">code</span> <span class="n">block</span> <span class="n">with</span> <span class="n">just</span> <span class="n">[office\_supplies\_updated]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">}</span> <span class="n">in</span> <span class="n">it</span><span class="p">,</span> <span class="n">which</span> <span class="n">will</span> <span class="n">print</span> <span class="n">it</span> <span class="n">out</span> <span class="n">for</span> <span class="n">inspection.</span>
+<span class="n">Has</span> <span class="n">the</span> <span class="n">change</span> <span class="n">stuck</span> <span class="n">now</span><span class="o">?</span>
+</pre></div>
+
+
+<h2>Filtering&nbsp;data</h2>
+<p>Next up is the <code>filter()</code> function, which provides a ruled-based way to keep a subset of rows and remove the rest.
+Here we just consider rules that are simple comparisons, which involve the&nbsp;symbols:</p>
+<ul>
+<li>[&gt;]{.monospace}: greater&nbsp;than</li>
+<li>[&gt;=]{.monospace}: greater than or equal&nbsp;to</li>
+<li>[&lt;]{.monospace}: less&nbsp;than</li>
+<li>[&lt;=]{.monospace}: less than or equal&nbsp;to</li>
+<li>[!=]{.monospace}: not&nbsp;equal</li>
+<li>[==]{.monospace}:&nbsp;equal</li>
+</ul>
+<p>So, for example, a comparison rule that would show us all items that cost more than 16 dollars per unit would be [unit_price &gt; 16]{.monospace}.
+A comparison rule that would find all rows with the representative Susan would be [representative == &#8220;Susan&#8221;]{.monospace} (if you are testing for equality with a column of [chr]{.monospace} type, then you need to surround any words or values in the column with quotation marks [&#8220;like&nbsp;so&#8221;]{.monospace}.)</p>
+<p>@.
+    Give the <code>filter()</code> function a try by running the following two code&nbsp;blocks:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="k">filter</span><span class="p">(</span><span class="n">unit_price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="k">filter</span><span class="p">(</span><span class="n">representative</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">&quot;Susan&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">After</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">code</span><span class="p">,</span><span class="w"> </span><span class="n">figure</span><span class="w"> </span><span class="k">out</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">write</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="err">`</span><span class="k">filter</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">shows</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="n">sold</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">Susan</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">cost</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="k">than</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="n">dollars</span><span class="p">.</span><span class="w"></span>
+<span class="n">You</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">able</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">we</span><span class="err">&#39;</span><span class="n">ve</span><span class="w"> </span><span class="n">seen</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="o">[</span><span class="n">tidyverse</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">commands</span><span class="w"></span>
+</pre></div>
+
+
+<p>Using <code>filter()</code> is a lot like running an advanced search on a data base, and gives us a convenient way to quickly look up and inspect subsets of&nbsp;data.</p>
+<p>@.
+    Write a filter that shows us all the sales that involved the [item]{.monospace} &#8220;Pen&nbsp;Set&#8221;.</p>
+<h2>Data&nbsp;aggregation</h2>
+<p>It is common to want to summarize the information contained within a dataset, such as computing sums and averages, or counting how many data points belong to different groups.
+This is called data aggregation, as it <strong>aggregates</strong> many data points together and uses them to compute a cetain quantity. 
+We perform data aggregation in R by using the commands <code>group_by()</code> and <code>summarize()</code>, which frequently show up as a&nbsp;pair.</p>
+<p>The <code>group_by()</code> command is applied to one or more columns, and allows you create groups that share common values in a column of categorical data.
+The <code>summarize()</code> command can be used when you want to do things like calculate the average number of units sold by each representative, or calculate the gross earnings of each&nbsp;[item]{.monospace}.</p>
+<p>@aggregation-practice.
+    <code>group_by()</code> and <code>summarize()</code> are functions that are easier to understand using examples.
+    First, run this example where we use <code>mean()</code> to calculate the average of a&nbsp;column:</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">office_supplies</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">representative</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">summarize</span><span class="p">(</span><span class="n">avg_units_sold</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">units</span><span class="p">))</span>
+<span class="o">```</span>
+
+<span class="n">Which</span> <span class="n">representative</span> <span class="n">sold</span> <span class="n">the</span> <span class="n">most</span> <span class="n">units</span> <span class="k">on</span> <span class="n">average</span><span class="o">?</span>
+
+<span class="n">Let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">run</span> <span class="n">another</span> <span class="n">example</span> <span class="k">where</span> <span class="n">we</span> <span class="k">add</span> <span class="n">together</span> <span class="n">the</span> <span class="n">numbers</span> <span class="k">in</span> <span class="n">a</span> <span class="k">column</span> <span class="k">using</span> <span class="o">`</span><span class="k">sum</span><span class="p">()</span><span class="o">`</span><span class="p">:</span>
+
+<span class="o">```</span><span class="n">r</span>
+<span class="n">office_supplies</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">total_price</span> <span class="o">=</span> <span class="n">units</span> <span class="o">*</span> <span class="n">unit_price</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">summarize</span><span class="p">(</span><span class="n">gross_earnings</span> <span class="o">=</span> <span class="k">sum</span><span class="p">(</span><span class="n">total_price</span><span class="p">))</span>
+<span class="o">```</span>
+
+<span class="n">Which</span> <span class="n">item</span> <span class="n">brought</span> <span class="k">in</span> <span class="n">the</span> <span class="n">most</span> <span class="n">gross</span> <span class="n">earnings</span><span class="o">?</span>
+</pre></div>
+
+
+<p>Small changes to how we group our data can have a big impact on what our summary tables look like.
+This gives us a lot of flexibility in aggregating our data for&nbsp;analysis.</p>
+<p>@.
+    Take the second code example from <strong>Exercise @aggregation-practice</strong> and modify it so that it groups over two variables instead of&nbsp;one:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">mutate</span><span class="p">(</span><span class="n">total_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unit_price</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">group_by</span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="w"> </span><span class="n">region</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">summarize</span><span class="p">(</span><span class="n">gross_earnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">total_price</span><span class="p">))</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">How</span><span class="w"> </span><span class="n">did</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">change</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">summary</span><span class="w"> </span><span class="nc">table</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">**</span><span class="n">Exercise</span><span class="w"> </span><span class="nv">@aggregation</span><span class="o">-</span><span class="n">practice</span><span class="o">**</span><span class="vm">?</span><span class="w"></span>
+<span class="n">Interpret</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nc">table</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">output</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<h2>Additional&nbsp;exercises</h2>
+<p>@.
+    The company wishes to expand their sales to include a new region, Canada.
+    Doing this would require converting the unit prices from <span class="caps">US</span> dollars to Canadian Dollars.
+    The current conversion rate is 1 <span class="caps">US</span> Dollar = 1.29 Canadian Dollars.
+    So, for example, an item that costs 2.99 <span class="caps">US</span> Dollars would convert to \(2.99 \times 1.29 = 3.86\) Canadian Dollars.
+    Using the <code>mutate()</code> function, write a code snippet that converts the unit price in <span class="caps">US</span> Dollars into Canadian Dollars and stores the result in a new column named&nbsp;[unit_price_canadian]{.monospace}.</p>
+<p>@.
+    Take the 2nd code example you ran in <strong>Exercise @aggregation-practice</strong> and assign it to a variable, like&nbsp;so:</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">items_gross_earnings</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">office_supplies</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">mutate</span><span class="p">(</span><span class="n">total_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unit_price</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">group_by</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">summarize</span><span class="p">(</span><span class="n">gross_earnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">total_price</span><span class="p">))</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">Use</span><span class="w"> </span><span class="o">[</span><span class="n">items\_gross\_earnings</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bar</span><span class="w"> </span><span class="n">chart</span><span class="w"> </span><span class="n">visualization</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">gross</span><span class="w"> </span><span class="n">earnings</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="n">secondary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Hint</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">You</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="err">`</span><span class="n">geom_col</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<h2>How to&nbsp;submit</h2>
+<p>To submit your lab, follow the two steps below.
+Your lab will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Lab 3</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;lab:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">dplyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+<h2>Credits</h2>
+<p>This lab is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+Exercises and instructions written by James Glasbrenner for <span class="caps">CDS</span>-102.</p>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

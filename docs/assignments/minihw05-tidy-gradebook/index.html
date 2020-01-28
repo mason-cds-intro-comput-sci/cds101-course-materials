@@ -1,0 +1,364 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Mini-homework 5 – Tidy&nbsp;Gradebook</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the mini-homework, which contains a starter file named [tidy_gradebook.Rmd]{.monospace}.
+This mini-homework will help you become more familiar with reshaping datasets using R by guiding you through some examples.
+Read the <a href="#about-the-dataset">About the dataset</a> section to get some background information on the dataset that you&#8217;ll be working with.
+Each of the below <a href="#exercises">exercises</a> are to be completed in the provided spaces within your starter file [tidy_gradebook.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <strong><a href="#how-to-submit">How to submit</a></strong> section&nbsp;below.</p>
+<h2>About the&nbsp;dataset</h2>
+<p>The dataset we are working with in this mini-homework is the [gradebook]{.monospace} dataset, a synthetic spreadsheet of student grades for a fictitious course.
+The gradebook data does not fulfill the tidy data principles, but illustrates a way that an instructor might implement his or her gradebook in spreadsheet software.
+<strong>Load the dataset by running the setup block at the top of your R Markdown file,</strong> then inspect the dataset by running <code>View(gradebook)</code> in the <em>Console</em>&nbsp;window.</p>
+<p>This dataset breaks all 3 of the tidy data&nbsp;rules:</p>
+<ol>
+<li>
+<p>Each variable must have its own&nbsp;column.</p>
+<ul>
+<li><em>The student names, assignment categories, assignment names, and grades are the variables in the dataset.</em>
+    <em>Each individual student should not be considered a separate&nbsp;variable.</em></li>
+</ul>
+</li>
+<li>
+<p>Each observation must have its own&nbsp;row.</p>
+<ul>
+<li><em>A single observation in this dataset should be a single grade given to a student for a specific assignment.</em>
+    <em>Instead of one grade per row, there are multiple grades per&nbsp;row.</em></li>
+</ul>
+</li>
+<li>
+<p>Each value must have its own&nbsp;cell.</p>
+<ul>
+<li><em>The student names can be split out into first and last name columns instead of keeping it as a full&nbsp;name.</em></li>
+</ul>
+</li>
+</ol>
+<p>The student names were generated using the site: http://listofrandomnames.com.
+Any similarity to real names is&nbsp;coincidental.</p>
+<h2>Exercises</h2>
+<p>Our main goal in the exercises below will be to use the [tidyr]{.monospace} functions to reshape the dataset so that it fulfills the tidy data principles.
+Afterwards, we will analyze the&nbsp;dataset.</p>
+<p>@gather-gradebook.
+    To fulfill the tidy data principles, we need to use the <code>gather()</code> function to convert the student columns into rows so that each row contains a single grade.
+    A template code block for doing this is provided&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">gradebook_long</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gradebook</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">gather</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">students</span><span class="o">&gt;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;&lt;key&gt;&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;&lt;value&gt;&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">work</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">replace</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;students\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">names</span><span class="w"> </span><span class="p">(</span><span class="n">don</span><span class="s1">&#39;t forget to also remove the angular brackets [\&lt;\&gt;]{.monospace} when filling in your answer).</span>
+<span class="s1">Then, [\&lt;key\&gt;]{.monospace} and [\&lt;value\&gt;]{.monospace} need to be replaced so that the new column containing the student names is called [Name]{.monospace} and the new column containing the assignment grades is called [Grades]{.monospace}.</span>
+
+<span class="s1">::: {.callout .primary}</span>
+<span class="s1">**[Hints]{.h4}**</span>
+
+<span class="s1">*   Refer to section 12.3.1 of the *R for Data Science* textbook for additional clues on how to use the `gather()` function: &lt;https://r4ds.had.co.nz/tidy-data.html#gathering&gt;</span>
+
+<span class="s1">*   The names for the student columns contain spaces, so you will need to use backticks when specifying them, for example [\`Jermaine Gautreau\`]{.monospace}.</span>
+
+<span class="s1">*   You shouldn&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">student</span><span class="w"> </span><span class="k">names</span><span class="w"> </span><span class="n">manually</span><span class="p">.</span><span class="w"></span>
+<span class="w">    </span><span class="k">Section</span><span class="w"> </span><span class="mf">5.4</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="o">*</span><span class="n">R</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">Data</span><span class="w"> </span><span class="n">Science</span><span class="o">*</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">hint</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">how</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="k">names</span><span class="err">:</span><span class="w"> </span><span class="o">&lt;</span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">r4ds</span><span class="p">.</span><span class="n">had</span><span class="p">.</span><span class="n">co</span><span class="p">.</span><span class="n">nz</span><span class="o">/</span><span class="n">transform</span><span class="p">.</span><span class="n">html#select</span><span class="o">&gt;</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@separate-gradebook.
+    The [Name]{.monospace} column that we created in exercise @gather-gradebook technically contains two values per cell, i.e. each student&#8217;s first name <em>and</em> last name.
+    We can fix this by using the <code>separate()</code> function to split the column into two columns.
+    A template code block for doing this is provided&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span>
+<span class="n">tidy_gradebook</span> <span class="o">&lt;-</span> <span class="n">gradebook_long</span> <span class="o">%&gt;%</span>
+  <span class="n">separate</span><span class="p">(</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">column</span> <span class="n">to</span> <span class="n">separate</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">into</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="s">&quot;&lt;name for first column&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;name for second column&gt;&quot;</span><span class="p">),</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="s">&quot;&lt;separator&gt;&quot;</span>
+  <span class="p">)</span>
+<span class="err">```</span>
+
+<span class="n">To</span> <span class="n">get</span> <span class="n">the</span> <span class="n">code</span> <span class="n">to</span> <span class="n">work</span><span class="p">,</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">replace</span> <span class="p">[</span><span class="err">\</span><span class="o">&lt;</span><span class="n">column</span> <span class="n">to</span> <span class="n">separate</span><span class="err">\</span><span class="o">&gt;</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">with</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">column</span> <span class="n">that</span> <span class="n">you</span> <span class="n">wish</span> <span class="n">to</span> <span class="n">split</span> <span class="n">into</span> <span class="n">two</span> <span class="n">columns</span> <span class="p">(</span><span class="n">like</span> <span class="n">before</span><span class="p">,</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">forget</span> <span class="n">to</span> <span class="n">also</span> <span class="n">remove</span> <span class="n">the</span> <span class="n">angular</span> <span class="n">brackets</span> <span class="p">[</span><span class="err">\</span><span class="o">&lt;</span><span class="err">\</span><span class="o">&gt;</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">when</span> <span class="n">filling</span> <span class="k">in</span> <span class="n">your</span> <span class="n">answer</span><span class="p">).</span>
+<span class="n">Then</span><span class="p">,</span> <span class="p">[</span><span class="err">\</span><span class="o">&lt;</span><span class="n">name</span> <span class="k">for</span> <span class="n">first</span> <span class="n">column</span><span class="err">\</span><span class="o">&gt;</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">and</span> <span class="p">[</span><span class="err">\</span><span class="o">&lt;</span><span class="n">name</span> <span class="k">for</span> <span class="n">second</span> <span class="n">column</span><span class="err">\</span><span class="o">&gt;</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">need</span> <span class="n">to</span> <span class="n">be</span> <span class="n">replaced</span> <span class="n">so</span> <span class="n">that</span> <span class="n">the</span> <span class="n">new</span> <span class="n">column</span> <span class="n">of</span> <span class="n">first</span> <span class="n">names</span> <span class="n">is</span> <span class="n">called</span> <span class="p">[</span><span class="n">First</span> <span class="n">Name</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">and</span> <span class="n">the</span> <span class="n">new</span> <span class="n">column</span> <span class="n">of</span> <span class="n">last</span> <span class="n">names</span> <span class="n">is</span> <span class="n">called</span> <span class="p">[</span><span class="n">Last</span> <span class="n">Name</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}.</span>
+<span class="n">Finally</span><span class="p">,</span> <span class="p">[</span><span class="err">\</span><span class="o">&lt;</span><span class="n">separator</span><span class="err">\</span><span class="o">&gt;</span><span class="p">]{.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">replaced</span> <span class="n">with</span> <span class="n">whatever</span> <span class="n">symbol</span><span class="o">/</span><span class="n">letter</span><span class="o">/</span><span class="n">etc</span> <span class="n">that</span> <span class="n">separates</span> <span class="n">the</span> <span class="n">first</span> <span class="n">and</span> <span class="n">last</span> <span class="n">name</span> <span class="n">of</span> <span class="n">each</span> <span class="n">student</span><span class="p">.</span>
+
+<span class="n">After</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">obtained</span> <span class="n">your</span> <span class="n">tidy</span> <span class="n">gradebook</span><span class="p">,</span> <span class="n">take</span> <span class="n">a</span> <span class="n">look</span> <span class="n">at</span> <span class="n">the</span> <span class="n">first</span> <span class="n">several</span> <span class="n">rows</span> <span class="n">using</span> <span class="n">the</span> <span class="n">following</span> <span class="n">code</span> <span class="nl">block</span><span class="p">:</span>
+
+<span class="err">```</span><span class="n">r</span>
+<span class="n">tidy_gradebook</span> <span class="o">%&gt;%</span>
+  <span class="n">head</span><span class="p">()</span>
+<span class="err">```</span>
+</pre></div>
+
+
+<p>@blackboard-style-gradebook.
+    The data frame we obtain in exercise @separate-gradebook fulfills the tidy data principles, but it does not resemble how gradebooks are presented.
+    For example, gradebooks in Blackboard have each row correspond to a student and each column correspond to an assignment.
+    To represent our gradebook in this format, we need to use the <code>spread()</code> function to convert the rows of the [Assignment]{.monospace} column into their own columns.
+    Let&#8217;s do that now for the sake of&nbsp;practice.</p>
+<div class="highlight"><pre><span></span><span class="n">The</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">thing</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">Category</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">column</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">typically</span><span class="w"> </span><span class="n">stored</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">metadata</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">visible</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">gradebooks</span><span class="p">.</span><span class="w"></span>
+<span class="o">**</span><span class="nf">Replace</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ellipses</span><span class="w"> </span><span class="o">[</span><span class="n">...</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">template</span><span class="w"> </span><span class="n">below</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">Category</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">removed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="n">remains</span><span class="p">.</span><span class="o">**</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">gradebook_no_categories</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tidy_gradebook</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="k">select</span><span class="p">(...)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Now</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">ready</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="err">`</span><span class="n">spread</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">convert</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">Assignment</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">multiple</span><span class="w"> </span><span class="n">columns</span><span class="p">.</span><span class="w"></span>
+<span class="n">A</span><span class="w"> </span><span class="n">template</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">doing</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">provided</span><span class="w"> </span><span class="n">below</span><span class="p">,</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">blackboard_gradebook</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gradebook_no_categories</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">spread</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="k">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="k">key</span><span class="o">&gt;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="k">value</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">work</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">replace</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;key\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">**</span><span class="k">names</span><span class="o">**</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">creating</span><span class="w"> </span><span class="p">(</span><span class="n">this</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">categorical</span><span class="w"> </span><span class="k">data</span><span class="p">).</span><span class="w"></span>
+<span class="k">Then</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">\&lt;value\&gt;</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">replaced</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"> </span><span class="n">grades</span><span class="p">)</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">placed</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">columns</span><span class="p">.</span><span class="w"></span>
+
+<span class="k">After</span><span class="w"> </span><span class="n">you</span><span class="err">&#39;</span><span class="n">ve</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="ss">&quot;Blackboard-style&quot;</span><span class="w"> </span><span class="n">gradebook</span><span class="p">,</span><span class="w"> </span><span class="n">take</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">several</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="nl">block</span><span class="p">:</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">blackboard_gradebook</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">head</span><span class="p">()</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+</pre></div>
+
+
+<p>@homework-5-distribution.
+    Now that we have a tidy gradebook, let&#8217;s look at the grade distribution for one of the homework assignments, <em>Homework 5</em>.
+    First, you will need to need to filter the dataset so that it only contains entries for Homework 5.
+    A template code block for doing this is provided&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="n">```r</span>
+<span class="n">homework5_grades &lt;- tidy_gradebook %&gt;%</span>
+<span class="n">  filter(...)</span>
+<span class="n">```</span>
+
+<span class="n">Replace</span> <span class="n">the</span> <span class="n">ellipses</span> <span class="n">[...]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">}</span> <span class="n">so</span> <span class="n">that</span> <span class="n">[homework5\_grades]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">}</span> <span class="n">only</span> <span class="n">contains</span> <span class="n">rows</span> <span class="n">with</span> <span class="n">grades</span> <span class="n">for</span> <span class="o">*</span><span class="n">Homework</span> <span class="m">5</span><span class="o">*</span><span class="n">.</span>
+
+<span class="o">**</span><span class="n">After</span> <span class="n">you</span> <span class="n">successfully</span> <span class="n">filter</span> <span class="n">the</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">create</span> <span class="n">a</span> <span class="n">histogram</span> <span class="n">of</span> <span class="n">the</span> <span class="n">grades</span> <span class="n">stored</span> <span class="n">in</span> <span class="n">[homework5\_grades]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">}</span><span class="n">.*</span><span class="o">*</span>
+<span class="n">The</span> <span class="n">histogram</span> <span class="n">should</span> <span class="n">have</span> <span class="n">a</span> <span class="n">binwidth</span> <span class="n">of</span> <span class="m">10</span> <span class="n">and</span> <span class="n">be</span> <span class="n">centered</span> <span class="n">around</span> <span class="m">0</span> <span class="p">(</span><span class="n">use</span> <span class="n">[center</span> <span class="o">=</span> <span class="m">0</span><span class="n">]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">})</span><span class="n">.</span>
+<span class="n">You</span> <span class="n">should</span> <span class="n">be</span> <span class="n">familiar</span> <span class="n">with</span> <span class="n">creating</span> <span class="n">histograms</span> <span class="n">by</span> <span class="n">now</span><span class="p">,</span> <span class="n">so</span> <span class="n">no</span> <span class="n">template</span> <span class="n">for</span> <span class="n">this</span> <span class="n">one</span><span class="o">!</span>
+</pre></div>
+
+
+<p>@final-grade-weights.
+    Having a tidy dataset makes computing the final grade for each student in the course straightforward.
+    Let&#8217;s assume that the category weights are the&nbsp;following:</p>
+<div class="highlight"><pre><span></span><span class="o">|</span> <span class="n">Category</span>     <span class="o">|</span> <span class="n">Weight</span> <span class="o">|</span>
+<span class="o">|</span> <span class="o">------------</span> <span class="o">|</span> <span class="o">------</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">Homework</span>     <span class="o">|</span> <span class="mi">30</span><span class="o">%</span>    <span class="o">|</span>
+<span class="o">|</span> <span class="n">Quiz</span>         <span class="o">|</span> <span class="mi">20</span><span class="o">%</span>    <span class="o">|</span>
+<span class="o">|</span> <span class="n">Midterm</span> <span class="n">Exam</span> <span class="o">|</span> <span class="mi">25</span><span class="o">%</span>    <span class="o">|</span>
+<span class="o">|</span> <span class="n">Final</span> <span class="n">Exam</span>   <span class="o">|</span> <span class="mi">25</span><span class="o">%</span>    <span class="o">|</span>
+
+<span class="n">In</span> <span class="n">order</span> <span class="n">to</span> <span class="n">use</span> <span class="n">this</span> <span class="n">information</span> <span class="n">to</span> <span class="n">compute</span> <span class="n">the</span> <span class="n">final</span> <span class="n">grade</span> <span class="k">for</span> <span class="n">each</span> <span class="n">student</span><span class="p">,</span> <span class="n">we</span> <span class="n">first</span> <span class="n">need</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">data</span> <span class="n">frame</span> <span class="n">to</span> <span class="n">store</span> <span class="n">the</span> <span class="n">category</span> <span class="n">weights</span><span class="o">.</span>
+<span class="n">A</span> <span class="n">template</span> <span class="n">code</span> <span class="n">block</span> <span class="k">for</span> <span class="n">doing</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">provided</span> <span class="n">below</span><span class="p">,</span>
+
+<span class="sb">``</span><span class="err">`</span><span class="n">r</span>
+<span class="n">grade_weights</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span>
+  <span class="n">Category</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="s2">&quot;Homework&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span>
+  <span class="n">Weight</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="mf">0.30</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="sb">``</span><span class="err">`</span>
+
+<span class="n">The</span> <span class="n">first</span> <span class="n">row</span> <span class="n">has</span> <span class="n">been</span> <span class="n">filled</span> <span class="ow">in</span> <span class="k">for</span> <span class="n">you</span><span class="o">.</span>
+<span class="n">Replace</span> <span class="n">the</span> <span class="n">ellipses</span> <span class="p">[</span><span class="o">...</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">so</span> <span class="n">that</span> <span class="n">the</span> <span class="n">rest</span> <span class="n">of</span> <span class="n">the</span> <span class="n">categories</span> <span class="ow">and</span> <span class="n">weights</span> <span class="n">are</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">the</span> <span class="p">[</span><span class="n">grade</span>\<span class="n">_weights</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">data</span> <span class="n">frame</span><span class="o">.</span>
+<span class="o">**</span><span class="n">The</span> <span class="n">spelling</span> <span class="ow">and</span> <span class="n">capitalization</span> <span class="ow">in</span> <span class="n">the</span> <span class="p">[</span><span class="n">Category</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">column</span> <span class="n">must</span> <span class="n">exactly</span> <span class="n">match</span> <span class="n">the</span> <span class="n">above</span> <span class="n">table</span><span class="o">.**</span>
+
+<span class="n">Once</span> <span class="n">you</span> <span class="n">have</span> <span class="p">[</span><span class="n">grade</span>\<span class="n">_weights</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">created</span><span class="p">,</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="kn">import</span> <span class="nn">that</span> <span class="nn">information</span> <span class="nn">into</span> <span class="p">[</span><span class="n">tidy</span>\<span class="n">_gradebook</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span><span class="o">.</span>
+<span class="n">We</span> <span class="n">can</span> <span class="n">do</span> <span class="n">that</span> <span class="n">using</span> <span class="n">the</span> <span class="sb">`left_join()`</span> <span class="n">function</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
+
+<span class="sb">``</span><span class="err">`</span><span class="n">r</span>
+<span class="n">tidy_gradebook_with_weights</span> <span class="o">&lt;-</span> <span class="n">tidy_gradebook</span> <span class="o">%&gt;%</span>
+  <span class="n">left_join</span><span class="p">(</span><span class="n">grade_weights</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">combine</span><span class="p">(</span><span class="s2">&quot;Category&quot;</span><span class="p">))</span>
+<span class="sb">``</span><span class="err">`</span>
+
+<span class="n">Copy</span> <span class="ow">and</span> <span class="n">paste</span> <span class="n">this</span> <span class="n">into</span> <span class="n">your</span> <span class="n">R</span> <span class="n">Markdown</span> <span class="n">notebook</span> <span class="ow">and</span> <span class="n">verify</span> <span class="n">that</span> <span class="p">[</span><span class="n">tidy</span>\<span class="n">_gradebook</span>\<span class="n">_with</span>\<span class="n">_weights</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="n">now</span> <span class="n">contains</span> <span class="n">a</span> <span class="n">column</span> <span class="n">called</span> <span class="p">[</span><span class="n">Weight</span><span class="p">]{</span><span class="o">.</span><span class="n">monospace</span><span class="p">}</span> <span class="k">with</span> <span class="n">the</span> <span class="n">category</span> <span class="n">weights</span><span class="o">.</span>
+</pre></div>
+
+
+<p>@mutate-weighted-grades.
+    Now that we&#8217;ve imported the category weights into our gradebook, we can continue with computing the final grade for each student.
+    Our next step in this calculation is to multiply the category weights and grades columns together using <code>mutate()</code>.
+    A template code block for doing this is provided&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">weighted_grades</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tidy_gradebook_with_weights</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">mutate</span><span class="p">(</span><span class="err">`</span><span class="n">Weighted</span><span class="w"> </span><span class="n">Grade</span><span class="err">`</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="nf">Replace</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ellipses</span><span class="w"> </span><span class="o">[</span><span class="n">...</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">Grade</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">Weight</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">multiplied</span><span class="w"> </span><span class="n">together</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@compute-final-grades.
+    Now that we&#8217;ve weighted the grades, we can now use <code>group_by()</code> and <code>summarize()</code> to compute the average weighted grade for each student and in each category.
+    A template code block for doing this is provided&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="s s-Atom">r</span>
+<span class="s s-Atom">grades_per_category</span> <span class="s s-Atom">&lt;-</span> <span class="s s-Atom">weighted_grades</span> <span class="c1">%&gt;%</span>
+  <span class="nf">group_by</span><span class="p">(</span><span class="err">`</span><span class="nv">First</span> <span class="nv">Name</span><span class="err">`</span><span class="p">,</span> <span class="err">`</span><span class="nv">Last</span> <span class="nv">Name</span><span class="err">`</span><span class="p">,</span> <span class="nv">Category</span><span class="p">)</span> <span class="c1">%&gt;%</span>
+  <span class="nf">summarize</span><span class="p">(</span><span class="err">`</span><span class="nv">Category</span> <span class="nv">Grade</span><span class="err">`</span> <span class="o">=</span> <span class="p">...)</span>
+<span class="err">```</span>
+
+<span class="nv">Replace</span> <span class="s s-Atom">the</span> <span class="s s-Atom">ellipses</span> <span class="p">[...]{.</span><span class="s s-Atom">monospace</span><span class="p">}</span> <span class="s s-Atom">so</span> <span class="s s-Atom">that</span> <span class="s s-Atom">the</span> <span class="s s-Atom">average</span> <span class="s s-Atom">of</span> <span class="s s-Atom">the</span> <span class="s s-Atom">weighted</span> <span class="s s-Atom">grades</span> <span class="o">is</span> <span class="s s-Atom">computed</span> <span class="s s-Atom">for</span> <span class="s s-Atom">each</span> <span class="s s-Atom">student</span> <span class="s s-Atom">within</span> <span class="s s-Atom">each</span> <span class="s s-Atom">grade</span> <span class="s s-Atom">category</span><span class="p">.</span>
+
+<span class="nv">Finally</span><span class="p">,</span> <span class="s s-Atom">to</span> <span class="s s-Atom">compute</span> <span class="s s-Atom">the</span> <span class="s s-Atom">final</span> <span class="s s-Atom">grade</span><span class="p">,</span> <span class="s s-Atom">use</span> <span class="err">`</span><span class="nf">summarize</span><span class="p">()</span><span class="err">`</span> <span class="s s-Atom">to</span> <span class="s s-Atom">sum</span> <span class="s s-Atom">the</span> <span class="s s-Atom">average</span> <span class="s s-Atom">weighted</span> <span class="s s-Atom">grades</span> <span class="s s-Atom">per</span> <span class="s s-Atom">category</span> <span class="s s-Atom">together</span><span class="p">.</span>
+<span class="nv">A</span> <span class="s s-Atom">template</span> <span class="s s-Atom">code</span> <span class="s s-Atom">block</span> <span class="s s-Atom">for</span> <span class="s s-Atom">doing</span> <span class="s s-Atom">this</span> <span class="o">is</span> <span class="s s-Atom">provided</span> <span class="s s-Atom">below</span><span class="p">,</span>
+
+<span class="err">```</span><span class="s s-Atom">r</span>
+<span class="s s-Atom">final_grades</span> <span class="s s-Atom">&lt;-</span> <span class="s s-Atom">grades_per_category</span> <span class="c1">%&gt;%</span>
+  <span class="nf">summarize</span><span class="p">(</span><span class="err">`</span><span class="nv">Final</span> <span class="nv">Grade</span><span class="err">`</span> <span class="o">=</span> <span class="p">...)</span>
+<span class="err">```</span>
+
+<span class="nv">Replace</span> <span class="s s-Atom">the</span> <span class="s s-Atom">ellipses</span> <span class="p">[...]{.</span><span class="s s-Atom">monospace</span><span class="p">}</span> <span class="s s-Atom">so</span> <span class="s s-Atom">that</span> <span class="s s-Atom">the</span> <span class="s s-Atom">average</span> <span class="s s-Atom">weighted</span> <span class="s s-Atom">grades</span> <span class="s s-Atom">per</span> <span class="s s-Atom">category</span> <span class="s s-Atom">as</span> <span class="s s-Atom">summed</span> <span class="s s-Atom">together</span><span class="p">.</span>
+
+<span class="nv">Once</span> <span class="s s-Atom">you</span><span class="err">&#39;</span><span class="s s-Atom">ve</span> <span class="s s-Atom">computed</span> <span class="s s-Atom">the</span> <span class="s s-Atom">final</span> <span class="s s-Atom">grades</span><span class="p">,</span> <span class="s s-Atom">display</span> <span class="s s-Atom">the</span> <span class="s s-Atom">first</span> <span class="s s-Atom">few</span> <span class="s s-Atom">rows</span> <span class="s s-Atom">using</span> <span class="s s-Atom">the</span> <span class="s s-Atom">following</span> <span class="nn">code</span><span class="p">:</span>
+
+<span class="err">```</span><span class="s s-Atom">r</span>
+<span class="s s-Atom">final_grades</span> <span class="c1">%&gt;%</span>
+  <span class="nf">head</span><span class="p">()</span>
+<span class="err">```</span>
+
+<span class="nv">Confirm</span> <span class="s s-Atom">that</span> <span class="s s-Atom">the</span> <span class="s s-Atom">first</span> <span class="s s-Atom">six</span> <span class="s s-Atom">rows</span> <span class="s s-Atom">are</span> <span class="s s-Atom">the</span> <span class="nn">following</span><span class="p">:</span>
+
+<span class="p">|</span> <span class="nv">First</span> <span class="nv">Name</span>  <span class="p">|</span> <span class="nv">Last</span> <span class="nv">Name</span>  <span class="p">|</span>  <span class="nv">Final</span> <span class="nv">Grade</span> <span class="p">|</span>
+<span class="p">|</span> <span class="p">:-</span><span class="s s-Atom">---------</span> <span class="p">|</span> <span class="p">:-</span><span class="s s-Atom">--------</span> <span class="p">|</span> <span class="s s-Atom">-----------:</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Anthony</span>     <span class="p">|</span> <span class="nv">Capote</span>     <span class="p">|</span>     <span class="mf">87.22143</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Bryant</span>      <span class="p">|</span> <span class="nv">Criddle</span>    <span class="p">|</span>     <span class="mf">90.60000</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Cherie</span>      <span class="p">|</span> <span class="nv">Maiden</span>     <span class="p">|</span>     <span class="mf">71.17143</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Christiana</span>  <span class="p">|</span> <span class="nv">Deblois</span>    <span class="p">|</span>     <span class="mf">83.22857</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Cleveland</span>   <span class="p">|</span> <span class="nv">Fromm</span>      <span class="p">|</span>     <span class="mf">83.49286</span> <span class="p">|</span>
+<span class="p">|</span> <span class="nv">Cliff</span>       <span class="p">|</span> <span class="nv">Vankeuren</span>  <span class="p">|</span>     <span class="mf">79.81429</span> <span class="p">|</span>
+</pre></div>
+
+
+<p>@final-grades-visualization.
+    Now that we have the final grades, let&#8217;s use a point plot similar to what is shown in Chapter 15.4 of the textbook, http://r4ds.had.co.nz/factors.html#modifying-factor-order, and review how the students&nbsp;did:</p>
+<div class="highlight"><pre><span></span>```r
+ggplot(final_grades) +
+  geom_point(
+    mapping = aes(
+      x = `Final Grade`,
+      y = fct_reorder(`Last Name`, `Final Grade`)
+    )
+  ) +
+  labs(
+    x = &quot;Final Grade&quot;,
+    y = &quot;Student Name&quot;
+  ) +
+  coord_cartesian(xlim = combine(60, 100))
+```
+
+The figure&#39;s length and width may look distorted by default.
+To fix this, add [fig.asp = 0.85]{.monospace} as an input to your code block,
+
+<span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;#96;&amp;#96;&amp;#96;</span>{r, fig.asp = 0.85}<span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
+</pre></div>
+
+
+<h2>How to&nbsp;submit</h2>
+<p>To submit your mini-homework, follow the two steps below.
+Your homework will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Mini-homework 5</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;mini-homework:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">dplyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

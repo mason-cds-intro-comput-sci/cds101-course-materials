@@ -1,0 +1,369 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Mini-homework 8 – Under (blood)&nbsp;pressure</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the mini-homework, which contains a starter file named [pressure.Rmd]{.monospace}.
+This mini-homework will guide you through the process of building and analyzing linear regression models.
+Read the <a href="#about-the-dataset">About the dataset</a> section to get some background information on the dataset that you&#8217;ll be working with.
+Each of the below <a href="#exercises">exercises</a> are to be completed in the provided spaces within your starter file [pressure.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <strong><a href="#how-to-submit">How to submit</a></strong> section&nbsp;below.</p>
+<h2>About the&nbsp;dataset</h2>
+<p>The dataset<sup id="fnref:data-source"><a class="footnote-ref" href="#fn:data-source">1</a></sup> we are using in this mini-homework comes from a study conducted by anthropologists to determine the long-term effects of a change in environment on blood pressure.
+They measured the blood pressure of individuals who had migrated from a pre-modern environment high in the Andes mountains of Peru into the mainstream of Peruvian society at a much lower altitude.
+The motivation for looking at blood pressure for this group of individuals comes from a prior study in Africa, which suggested that migration from a simpler society to a more technologically complex one might increase blood pressure at first, but that the blood pressure would tend to decrease back to normal over time.
+The anthropologists recorded systolic blood pressure measurements as it is often a more sensitive indicator compared to diastolic measurements, as well as each participant&#8217;s height, weight, and a number of other characteristics.
+All these data are for males over 21 who were born at a high altitude and whose parents were born at a high&nbsp;altitude.</p>
+<p>Using this collected data, we aim to answer the research&nbsp;question,</p>
+<blockquote>
+<p>All else kept equal, does the amount of time spent in an urban environment affect the blood pressure of individuals that recently migrated from a pre-modern&nbsp;society?</p>
+</blockquote>
+<p>You might wonder if the features in the [infer]{.monospace} package would be sufficient to address this question.
+The [infer]{.monospace} package could be used to determine whether or not time spent in an urban environment has any effect at all, such that we could conclude &#8220;yes it does&#8221; or &#8220;no it doesn&#8217;t.&#8221;
+What it won&#8217;t let us do is predict the blood pressure of another individual that did not participate in the study or help to quantify how <strong>much</strong> of an effect time spent in an urban environment has relative to the other measurements taken during the study.
+If we want to predict things based on what we see in the dataset and analyze the relative importance of different variables, we will need to build a model.
+There are many types of models out there, and for this mini-homework we will focus on building a <em>linear regression model</em> for this&nbsp;dataset.</p>
+<p>The dataset [blood_pressure]{.monospace} contains 9 variables and 39&nbsp;rows,</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="monospace">[Systol]</td>
+<td>systolic blood pressure</td>
+</tr>
+<tr>
+<td class="monospace">[Age]</td>
+<td>age</td>
+</tr>
+<tr>
+<td class="monospace">[Years]</td>
+<td>years in urban area</td>
+</tr>
+<tr>
+<td class="monospace">[Weight]</td>
+<td>weight (kg)</td>
+</tr>
+<tr>
+<td class="monospace">[Height]</td>
+<td>height (mm)</td>
+</tr>
+<tr>
+<td class="monospace">[Chin]</td>
+<td>chin skinfold</td>
+</tr>
+<tr>
+<td class="monospace">[Forearm]</td>
+<td>forearm skinfold</td>
+</tr>
+<tr>
+<td class="monospace">[Calf]</td>
+<td>calf skinfold</td>
+</tr>
+<tr>
+<td class="monospace">[Pulse]</td>
+<td>resting pulse rate</td>
+</tr>
+</tbody>
+</table>
+<h2>Exercises</h2>
+<p>@visualize-systol-correlations.
+    As always, we begin by creating visualizations to help familiarize ourselves with the dataset.
+    Since we are interested in how the variable [Systol]{.monospace} is affected by the other variables in the dataset, let&#8217;s use <code>facet_wrap()</code> to create a sequence of scatter plots that will show us which variables correlate with [Systol]{.monospace}.
+    Fill in the ellipses [&#8230;]{.monospace} in the following template to create the&nbsp;visualization,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">blood_pressure</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">gather</span><span class="p">(...,</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;value&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">ggplot</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...))</span><span class="w"> </span><span class="o">+</span><span class="w"></span>
+<span class="w">  </span><span class="n">facet_wrap</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="p">...,</span><span class="w"> </span><span class="n">scales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;free_x&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">missing</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">`</span><span class="n">gather</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">grab</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="o">[</span><span class="n">Age</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">through</span><span class="w"> </span><span class="o">[</span><span class="n">Pulse</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span><span class="w"></span>
+<span class="ow">In</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">plot</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">missing</span><span class="w"> </span><span class="n">inputs</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">**</span><span class="n">vertical</span><span class="w"> </span><span class="n">axis</span><span class="o">**</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="o">[</span><span class="n">Systol</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">**</span><span class="n">horizontal</span><span class="w"> </span><span class="n">axis</span><span class="o">**</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="k">variable</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">faceting</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="k">over</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">different</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">names</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@interpret-systol-correlations.
+    Does the [Years]{.monospace} variable have a positive or negative correlation with [Systol]{.monospace}?
+    Are there any other variables that follow a similar trend with respect to [Systol]{.monospace}?
+    Which variables show a moderate to strong <em>positive</em> correlation with&nbsp;[Systol]{.monospace}?</p>
+<div class="highlight"><pre><span></span><span class="o">[</span><span class="n">Reminder</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="o">[</span><span class="n">Years</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">individual</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">lived</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">urban</span><span class="w"> </span><span class="n">environment</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@urban-frac-life-bmi-features.
+    A common preprocessing step in model building is to combine or transform some of the variables to create additional columns that may improve the accuracy of a model.
+    Our research question asks whether the length of time spent living in an urban environment correlates with decreased blood pressure over time. 
+    To figure this out, we could just look at [Years]{.monospace}, but it may be that any trends in the [Years]{.monospace} variable are confounded by the overall age of the individual.
+    Account for the effect of age by using <code>mutate()</code> to create a new column by computing the ratio $\text{urban_frac_life}=\dfrac{\text{Years}}{\text{Age}}$.
+    Assign the resulting data frame with these two new columns to&nbsp;[blood_pressure_updated]{.monospace}.</p>
+<p>@model-summary.
+    We&#8217;re now ready to create our first linear regression model using the <code>lm()</code> function!
+    Try the following as an example, which builds a linear regression model of [Systol]{.monospace} using [urban_frac_life]{.monospace} as the explanatory&nbsp;variable,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">systol_urban_frac_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">Systol</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">urban_frac_life</span><span class="p">,</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blood_pressure_updated</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="k">After</span><span class="w"> </span><span class="n">building</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">convenience</span><span class="w"> </span><span class="n">functions</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">broom</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">basic</span><span class="w"> </span><span class="n">overview</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="p">.</span><span class="w"></span>
+<span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="n">summarizing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">parameters</span><span class="p">,</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="n">tidy</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">function</span><span class="p">,</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">systol_urban_frac_model</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">tidy</span><span class="p">()</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">estimate</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="n">give</span><span class="w"> </span><span class="n">us</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">intercept</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">slope</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">our</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="p">(</span><span class="n">remember</span><span class="w"> </span><span class="err">$</span><span class="n">y</span><span class="o">=</span><span class="n">mx</span><span class="o">+</span><span class="n">b</span><span class="err">$</span><span class="vm">?</span><span class="p">).</span><span class="w"></span>
+<span class="n">Additional</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="n">about</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">such</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="err">’</span><span class="n">s</span><span class="w"> </span><span class="err">$</span><span class="n">R</span><span class="o">^</span><span class="err">{</span><span class="mi">2</span><span class="err">}$</span><span class="w"> </span><span class="n">paramter</span><span class="p">,</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="n">glance</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">function</span><span class="err">:</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">systol_urban_frac_model</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">glance</span><span class="p">()</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="err">$</span><span class="n">R</span><span class="o">^</span><span class="err">{</span><span class="mi">2</span><span class="err">}$</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="n">represents</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">proportion</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">explained</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="k">If</span><span class="w"> </span><span class="err">$</span><span class="n">R</span><span class="o">^</span><span class="err">{</span><span class="mi">2</span><span class="err">}$</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">means</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">doing</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">excellent</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="n">capturing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+<span class="k">If</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">close</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">doing</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">poor</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="n">capturing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="p">.</span><span class="w"></span>
+
+<span class="o">::</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="k">primary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Reminder</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">Notice</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="n">formula</span><span class="w"> </span><span class="n">syntax</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="err">`</span><span class="n">lm</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="n">specify</span><span class="p">()</span><span class="err">`</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">infer</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="w"></span>
+<span class="n">Remember</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">goes</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">left</span><span class="w"> </span><span class="n">side</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">tilde</span><span class="w"> </span><span class="o">[</span><span class="n">~</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">goes</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nf">right</span><span class="w"> </span><span class="n">side</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>@get-pred-and-resid.
+    After building a model, we would like to know what it predicts and how accurate the predictions are.
+    One way to capture the accuracy of the predictions is to calculate the <strong>residuals</strong>, which tell us how far off any given prediction is from the true value.
+    The [modelr]{.monospace} package, which is part of the [tidyverse]{.monospace}, provides us with functions for adding model predictions and residuals to our data frame.
+    To do this for our model [Systol ~ urban_frac_life]{.monospace}, we pipe our dataset into two functions, <code>add_predictions()</code> and <code>add_residuals()</code>, which each take the model <code>systol_urban_frac_model</code> that we built earlier as&nbsp;input,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">systol_urban_frac_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">blood_pressure_updated</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">add_predictions</span><span class="p">(</span><span class="n">systol_urban_frac_model</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">add_residuals</span><span class="p">(</span><span class="n">systol_urban_frac_model</span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">predictions</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="o">[</span><span class="n">pred</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">residuals</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="k">column</span><span class="w"> </span><span class="k">called</span><span class="w"> </span><span class="o">[</span><span class="n">resid</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@visualize-model-line.
+    Now that we&#8217;ve made our predictions and calculated the residuals, let&#8217;s create some visualizations to investigate how well our model performs.
+    First, let&#8217;s plot the model fit on top of the [Systol]{.monospace} versus [urban_frac_life]{.monospace} scatter plot.
+    To create this visualization, we will need the slope and intercept we printed out in Exercise @model-summary, which should be filled in the template code&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="n">systol_urban_frac_df</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_point</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="p">...,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">...))</span> <span class="o">+</span>
+  <span class="n">geom_abline</span><span class="p">(</span><span class="n">slope</span> <span class="o">=</span> <span class="p">...,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="p">...)</span>
+<span class="o">```</span>
+
+<span class="k">As</span> <span class="k">before</span><span class="p">,</span> <span class="n">you</span> <span class="n">will</span> <span class="n">need</span> <span class="k">to</span> <span class="n">fill</span> <span class="k">in</span> <span class="n">the</span> <span class="n">ellipses</span> <span class="p">[...]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">to</span> <span class="k">create</span> <span class="n">the</span> <span class="n">plot</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@observed-and-resid-vs-pred.
+    The one problem with the plot in Exercise @visualize-model-line is that it can only be made when your model has a single explanatory variable.
+    If you create a model with two or more explanatory variables, you will need a different type of plot to visualize the predictive power of your model.
+    One such plot is the <em>observed versus predicted plot</em>, which is created as&nbsp;follows,</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="n">systol_urban_frac_df</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">Systol</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_abline</span><span class="p">(</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">intercept</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="ss">&quot;red&quot;</span><span class="p">,</span>
+    <span class="k">size</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="p">)</span>
+<span class="o">```</span>
+
+<span class="n">Alternatively</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">use</span> <span class="n">a</span> <span class="o">*</span><span class="n">residual</span> <span class="n">versus</span> <span class="n">predicted</span> <span class="n">plot</span><span class="o">*</span><span class="p">,</span>
+
+<span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="n">systol_urban_frac_df</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">resid</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_ref_line</span><span class="p">(</span><span class="n">h</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">```</span>
+
+<span class="n">Make</span> <span class="k">both</span> <span class="k">of</span> <span class="n">these</span> <span class="n">plots</span> <span class="k">in</span> <span class="n">your</span> <span class="n">R</span> <span class="n">Markdown</span> <span class="n">file</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@residuals-hist.
+    It is also important to inspect the residuals to see what the prediction error is like.
+    It is typical to visualize the residuals using a histogram to get a sense of their center, shape, and overall spread.
+    Create a histogram of the [resid]{.monospace} column in [systol_urban_frac_df]{.monospace}, making sure you choose an appropriate bin width for the distribution.
+    What is the shape and center of the&nbsp;residuals?</p>
+<p>@linearity-constant-variability.
+    How do we know if a linear regression model is reliable?
+    In general, three conditions must be met in order for a linear model built using <code>lm()</code> to be&nbsp;reliable:</p>
+<div class="highlight"><pre><span></span><span class="mf">1.</span><span class="w">  </span><span class="o">**</span><span class="nl">Linearity</span><span class="p">:</span><span class="o">**</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">explanatory</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="k">variable</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">linear</span><span class="w"></span>
+
+<span class="mf">2.</span><span class="w">  </span><span class="o">**</span><span class="n">Nearly</span><span class="w"> </span><span class="n">normal</span><span class="w"> </span><span class="nl">residuals</span><span class="p">:</span><span class="o">**</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">residuals</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">nearly</span><span class="w"> </span><span class="n">normal</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="n">follow</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bell</span><span class="w"> </span><span class="n">curve</span><span class="w"> </span><span class="n">shape</span><span class="p">)</span><span class="w"></span>
+
+<span class="mf">3.</span><span class="w">  </span><span class="o">**</span><span class="n">Constant</span><span class="w"> </span><span class="nl">variability</span><span class="p">:</span><span class="o">**</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">points</span><span class="w"> </span><span class="n">around</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">roughly</span><span class="w"> </span><span class="n">constant</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">third</span><span class="w"> </span><span class="n">conditions</span><span class="p">,</span><span class="w"> </span><span class="o">**</span><span class="n">linearity</span><span class="o">**</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">**</span><span class="n">constant</span><span class="w"> </span><span class="n">variability</span><span class="o">**</span><span class="p">,</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">determined</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">plots</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">Exercise</span><span class="w"> </span><span class="nv">@observed</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">resid</span><span class="o">-</span><span class="n">vs</span><span class="o">-</span><span class="n">pred</span><span class="p">.</span><span class="w"></span>
+<span class="n">Look</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="o">*</span><span class="n">observed</span><span class="w"> </span><span class="n">versus</span><span class="w"> </span><span class="n">predicted</span><span class="o">*</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">*</span><span class="n">residual</span><span class="w"> </span><span class="n">versus</span><span class="w"> </span><span class="n">predicted</span><span class="o">*</span><span class="w"> </span><span class="n">plots</span><span class="w"> </span><span class="n">again</span><span class="p">.</span><span class="w"></span>
+<span class="k">If</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">points</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">plot</span><span class="w"> </span><span class="n">appear</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">follow</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">linear</span><span class="w"> </span><span class="p">(</span><span class="n">curved</span><span class="p">)</span><span class="w"> </span><span class="n">trend</span><span class="p">,</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">that</span><span class="err">’</span><span class="n">s</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">tell</span><span class="o">-</span><span class="n">tale</span><span class="w"> </span><span class="nf">sign</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">condition</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">linearity</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">violated</span><span class="p">.</span><span class="w"></span>
+<span class="n">Similarly</span><span class="p">,</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">*</span><span class="n">residual</span><span class="w"> </span><span class="n">versus</span><span class="w"> </span><span class="n">predicted</span><span class="o">*</span><span class="w"> </span><span class="n">plot</span><span class="p">,</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">residual</span><span class="w"> </span><span class="n">spread</span><span class="w"> </span><span class="n">seems</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">meaningfully</span><span class="w"> </span><span class="n">increase</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">decrease</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">predicted</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="k">condition</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">violated</span><span class="p">.</span><span class="w"></span>
+<span class="n">Interpret</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">plots</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">conclude</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">relationship</span><span class="w"> </span><span class="ow">between</span><span class="w"> </span><span class="o">[</span><span class="n">Systol</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">urban\_frac\_life</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">linear</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">linear</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="n">variability</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">violated</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>@qq-plot-residuals.
+    The histogram we created in Exercise @residuals-hist can give us a basic idea of whether the second condition, <strong>nearly normal residuals</strong>, is violated, but we should have a more precise method for figuring this out.
+    A useful method for determining if the residuals are nearly normal is to build a Q-Q plot using <code>geom_qq()</code>, which creates a plot that shows us precisely where the distribution of residuals deviates from normality.
+    To create the Q-Q plot of the residuals, run the following&nbsp;code,</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="k">data</span> <span class="o">=</span> <span class="n">systol_urban_frac_df</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">geom_qq</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">aes</span><span class="p">(</span><span class="n">sample</span> <span class="o">=</span> <span class="n">resid</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_qq_line</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">aes</span><span class="p">(</span><span class="n">sample</span> <span class="o">=</span> <span class="n">resid</span><span class="p">))</span>
+<span class="o">```</span>
+
+<span class="n">Generally</span><span class="p">,</span> <span class="k">if</span> <span class="n">we</span> <span class="n">have</span> <span class="n">a</span> <span class="n">nearly</span> <span class="n">normal</span> <span class="n">distribution</span> <span class="k">then</span> <span class="n">most</span> <span class="k">of</span> <span class="n">the</span> <span class="n">residuals</span> <span class="n">will</span> <span class="n">stay</span> <span class="k">close</span> <span class="k">to</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">line</span> <span class="k">on</span> <span class="n">the</span> <span class="n">Q</span><span class="o">-</span><span class="n">Q</span> <span class="n">plot</span><span class="p">.</span>
+<span class="n">Regions</span> <span class="k">where</span> <span class="n">the</span> <span class="n">residual</span> <span class="n">distribution</span> <span class="n">deviates</span> <span class="k">from</span> <span class="n">the</span> <span class="n">normal</span> <span class="n">distribution</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">bell</span> <span class="n">curve</span> <span class="n">shape</span> <span class="n">will</span> <span class="k">show</span> <span class="n">up</span> <span class="k">as</span> <span class="n">points</span> <span class="n">that</span> <span class="n">diverge</span> <span class="k">from</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">line</span><span class="p">.</span> 
+<span class="n">Based</span> <span class="k">on</span> <span class="n">what</span> <span class="n">you</span> <span class="n">see</span> <span class="k">in</span> <span class="n">the</span> <span class="n">visualization</span><span class="p">,</span> <span class="n">conclude</span> <span class="n">whether</span> <span class="k">or</span> <span class="k">not</span> <span class="n">the</span> <span class="n">residuals</span> <span class="k">are</span> <span class="n">nearly</span> <span class="n">normal</span><span class="p">.</span>
+</pre></div>
+
+
+<p>@weight-model.
+    Create and fit a second linear model for [Systol]{.monospace} using the [Weight]{.monospace} variable and name it [systol_weight_model]{.monospace}.
+    Does this new model seem to predict [Systol]{.monospace} better than [urban_frac_life]{.monospace}?
+    Determine this by comparing the $R^{2}$ values (obtained using <code>glance()</code>) for the two models.
+    Then, create an <em>observed versus predicted</em> plot, a <em>residual versus predicted</em> plot, and a Q-Q residual plot for this new model.
+    Should we conclude that this new model is reliable?
+    Why or why&nbsp;not?</p>
+<p>@combined-model.
+    Now let&#8217;s see what happens when we build a multivariate model.
+    Build a model for [Systol]{.monospace} that uses [urban_frac_life]{.monospace} and [Weight]{.monospace} at the same&nbsp;time,</p>
+<div class="highlight"><pre><span></span><span class="n">```r</span>
+<span class="n">systol_combo_model &lt;- lm(Systol ~ urban_frac_life + Weight, data = blood_pressure_updated)</span>
+<span class="n">```</span>
+
+<span class="n">Create</span> <span class="n">a</span> <span class="o">*</span><span class="n">residual</span> <span class="n">versus</span> <span class="n">predicted</span><span class="o">*</span> <span class="n">plot</span> <span class="n">and</span> <span class="n">a</span> <span class="n">Q</span><span class="o">-</span><span class="n">Q</span> <span class="n">residual</span> <span class="n">plot</span> <span class="n">for</span> <span class="n">this</span> <span class="n">model.</span>
+<span class="n">Should</span> <span class="n">we</span> <span class="n">conclude</span> <span class="n">that</span> <span class="n">this</span> <span class="n">new</span> <span class="n">model</span> <span class="n">is</span> <span class="n">reliable</span><span class="o">?</span>
+<span class="n">Also</span> <span class="n">inspect</span> <span class="n">the</span> <span class="o">$</span><span class="n">R^</span><span class="p">{</span><span class="m">2</span><span class="p">}</span><span class="o">$</span> <span class="n">value</span> <span class="n">for</span> <span class="n">this</span> <span class="n">new</span> <span class="n">model.</span>
+<span class="n">Does</span> <span class="n">this</span> <span class="n">seem</span> <span class="n">to</span> <span class="n">perform</span> <span class="n">better</span> <span class="n">than</span> <span class="n">the</span> <span class="n">single</span><span class="o">-</span><span class="n">variable</span> <span class="n">models</span><span class="o">?</span>
+</pre></div>
+
+
+<h2>How to&nbsp;submit</h2>
+<p>To submit your mini-homework, follow the two steps below.
+Your homework will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Mini-homework 8</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;mini-homework:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">dplyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:data-source">
+<p>Peruvian blood pressure dataset and description sources:
+  <a href="https://newonlinecourses.science.psu.edu/stat501/node/299/">https://newonlinecourses.science.psu.edu/stat501/node/299/</a>,
+  <a href="https://www2.stat.duke.edu/courses/Fall98/sta113/proj/datasets.html">https://www2.stat.duke.edu/courses/Fall98/sta113/proj/datasets.html</a>.&#160;<a class="footnote-backref" href="#fnref:data-source" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>

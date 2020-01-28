@@ -1,0 +1,552 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDS 101: Introduction to Computational and Data Sciences</title>
+    <link rel="stylesheet" href="/theme/css/cds101.min.css">
+    <link rel="stylesheet" href="/theme/css/custom.css">
+      <link rel="stylesheet" href="/theme/css/vendor/katex/katex.min.css">
+      <link rel="stylesheet" href="/theme/css/vendor/highlightjs/default.css">
+      <link rel="stylesheet" href="/theme/css/vendor/fontawesome/fa-svg-with-js.css">
+</head>  <body>
+    <div class="header-grid-container">
+<div class="banner-container">
+  <header>
+    <div class="banner">
+      <div class="course-logo">
+        <a href="/"><img src="/theme/img/course-logo.svg"></a>
+      </div>
+      <div class="university-logo">
+        <a href="https://gmu.edu"><img src="/theme/img/university-logo.svg"></a>
+      </div>
+    </div>
+  </header>
+</div>    </div>
+<div class="navbar-container">
+  <nav class="navbar">
+    <div class="navbar-mobile" data-responsive-toggle="main-menu" data-hide-for="large">
+      <button type="button" data-toggle="main-menu"><i class="fas fa-bars"></i><span class="navbar-mobile-title">Menu</span></button>
+    </div>
+
+    <div class="navbar-menu" id="main-menu">
+      <ul class="navbar-menu-list">
+        <li>
+          <a class="navbar-home-item" href="/"><i class="fas fa-home" data-fa-transform="grow-8"></i></a>
+        </li>
+            <li>
+              <a class="navbar-menu-item" href="/https://labs.cds101.com">CDS 102 Labs</a>
+            </li>
+      </ul>
+    </div>
+  </nav>
+</div>    <div class="content-grid-container">
+    <article class="static-page">
+<header class="static-page-header">
+  <h1 class="static-page-title">Lab 06 – Interactive&nbsp;visualizations</h1>
+</header><div class="static-page-body">
+  <h2>Instructions</h2>
+<p>Obtain the GitHub repository you will use to complete the lab, which contains a starter file named [lab06.Rmd]{.monospace}.
+This lab shows you how to create interactive visualizations using the [highcharter]{.monospace} and [leaflet]{.monospace} packages. 
+Carefully read the lab instructions and complete the exercises using the provided spaces within your starter file [lab06.Rmd]{.monospace}.
+Then, when you&#8217;re ready to submit, follow the directions in the <a href="#how-to-submit"><i class="fas fa-link"></i>How to submit</a> section&nbsp;below.</p>
+<p>::: {.callout .secondary}
+[Note on <span class="caps">PDF</span>&nbsp;submissions]{.h4}</p>
+<p>Because of how they work, the interactive visualizations will not show up when you knit your R Markdown files to the <span class="caps">PDF</span> format.
+This is okay.
+You should still submit the <span class="caps">PDF</span> file for this assignment to Blackboard.&nbsp;:::</p>
+<h2>What are interactive&nbsp;visualizations?</h2>
+<p>This lab introduces you to interactive visualizations, which are a class of dynamic visualizations that satisify two&nbsp;criteria[@wiki:interactive-visualization],</p>
+<blockquote>
+<p><strong>Human input:</strong> control of some aspect of the visual representation of information, or of the information being represented, must be available to a&nbsp;human</p>
+<p><strong>Response time:</strong> changes made by the human must be incorporated into the visualization in a timely&nbsp;manner</p>
+</blockquote>
+<p>Compared to static visualizations, which are the type of visualization that we create using [ggplot2]{.monospace}, interactive visualizations allow us to include additional information in the plots that make up our R Markdown reports.
+As Andy Kirk explains in <em>Data Visualisation: A Handbook for Data Driven Design</em>, interactive visualizations, when used in the right circumstances, offer many&nbsp;advantages[@kirk:data-visualisation-handbook:2016],</p>
+<blockquote>
+<p>It expands the physical limits of what you can show in a given&nbsp;space.</p>
+<p>It increases the quanity and broadens the variety of angles of analysis to serve different&nbsp;curiosities.</p>
+<p>It facilitates manipulations of the data displayed to handle varied&nbsp;interrogations.</p>
+<p>It increases the overall control and potential customisation of the&nbsp;experience.</p>
+<p>It amplifies your creative license and the scope for exploring different techniques for engaging&nbsp;users.</p>
+</blockquote>
+<p>Dashboards are a common way to implement an interactive visualization and also allow users to select the parts of a dataset they want to include in a plot.
+An example of a dashboard-based interactive visualization can be seen here: <a href="https://ajayk.shinyapps.io/csi_773/">https://ajayk.shinyapps.io/csi_773/</a>.
+While we won&#8217;t be building a full dashboard, we will utilize two R packages, <span style="white-space: nowrap;"><a href="http://jkunst.com/highcharter/"><i class="fas fa-link"></i>[highcharter]{.monospace}</a></span> and <span style="white-space: nowrap;"><a href="https://rstudio.github.io/leaflet/"><i class="fas fa-link"></i>[leaflet]{.monospace}</a></span> to add interactivity to our R Markdown documents and enhance the way we explore a new&nbsp;dataset.</p>
+<h2>About the&nbsp;dataset</h2>
+<p>::: {.callout .primary}
+[Unique&nbsp;dataset]{.h4}</p>
+<p>This dataset was scraped by Dr. Glasbrenner in January 2019 and it is original to <span class="caps">CDS</span> 102!&nbsp;:::</p>
+<p>You will be working with a dataset consisting of rental property information scraped on January 21, 2019 from <a href="https://www.carolinadesigns.com">https://www.carolinadesigns.com</a>, which is a website people can use to book vacation rentals in North Carolina&#8217;s Outer Banks.
+The information collected for each property includes rental rates, its location, its features, and if any special amenities accompany the property.
+The website only provides rental rates for properties and dates that haven&#8217;t been booked yet, so missing values under the [rate_[month]]{.monospace} columns were imputed using a predictive model trained on the available&nbsp;data.</p>
+<p>The table below provides descriptions of the dataset&#8217;s 63&nbsp;variables,</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="monospace">[property_number]</td>
+<td>Numeric identifier for rental property</td>
+</tr>
+<tr>
+<td class="monospace">[property_name]</td>
+<td>Name of rental property</td>
+</tr>
+<tr>
+<td class="monospace">[rate_[month]]</td>
+<td class="monospace">Median weekly rental rate for a given month. [[month]]</td>
+</tr>
+<tr>
+<td class="monospace">[latitude]</td>
+<td>Latitude for a given property</td>
+</tr>
+<tr>
+<td class="monospace">[longitude]</td>
+<td>Longitude for a given property</td>
+</tr>
+<tr>
+<td class="monospace">[region]</td>
+<td>Region where property is located. The regions are Corolla, Duck, Kill Devil Hills, Kitty Hawk, Nags Head, and Southern Shores</td>
+</tr>
+<tr>
+<td class="monospace">[waterfront]</td>
+<td>Classifies the proximity of a property to the water. The classifications are oceanfront, semi-oceanfront, soundfront, and inland</td>
+</tr>
+<tr>
+<td class="monospace">[check_in_day]</td>
+<td>Indicates if the property&#8217;s check-in day is Friday, Saturday, or Sunday</td>
+</tr>
+<tr>
+<td class="monospace">[beach_distance]</td>
+<td>Distance the property is from the beach in yards</td>
+</tr>
+<tr>
+<td class="monospace">[baths_full]</td>
+<td>The number of full bathrooms a property has</td>
+</tr>
+<tr>
+<td class="monospace">[baths_half]</td>
+<td>The number of half bathrooms a property has</td>
+</tr>
+<tr>
+<td class="monospace">[bed_[type]]</td>
+<td class="monospace">The number of beds of a certain type a property has. The values for [[type]]</td>
+</tr>
+<tr>
+<td class="monospace">[number_dvd_players]</td>
+<td>The number of <span class="caps">DVD</span> players a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_highchairs]</td>
+<td>The number of highchairs a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_of_bedrooms]</td>
+<td>The total number of bedrooms a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_of_master_bedrooms]</td>
+<td>The number of master bedrooms a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_outdoor_showers]</td>
+<td>The number of outdoor showers a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_parking_spaces]</td>
+<td>The number of parking spaces a property has</td>
+</tr>
+<tr>
+<td class="monospace">[number_tvs]</td>
+<td>The number of televisions a property has</td>
+</tr>
+<tr>
+<td class="monospace">[elevator]</td>
+<td>Indicates if the property has an elevator</td>
+</tr>
+<tr>
+<td class="monospace">[home_theater]</td>
+<td>Indicates if the property has a home theater room</td>
+</tr>
+<tr>
+<td class="monospace">[media_room]</td>
+<td>Indicates if the property has a media room</td>
+</tr>
+<tr>
+<td class="monospace">[recreation_room]</td>
+<td>Indicates if the property has a recreation room</td>
+</tr>
+<tr>
+<td class="monospace">[seasonal_fireplace]</td>
+<td>Indicates if the property has a fireplace</td>
+</tr>
+<tr>
+<td class="monospace">[basketball_hoop]</td>
+<td>Indicates if the property has a basketball hoop</td>
+</tr>
+<tr>
+<td class="monospace">[volleyball_area]</td>
+<td>Indicates if the property has an area to play volleyball</td>
+</tr>
+<tr>
+<td class="monospace">[cabana]</td>
+<td>Indicates if the property has a cabana</td>
+</tr>
+<tr>
+<td class="monospace">[charcoal_grill]</td>
+<td>Indicates if the property has a charcoal grill</td>
+</tr>
+<tr>
+<td class="monospace">[gas_grill]</td>
+<td>Indicates if the property has a gas grill</td>
+</tr>
+<tr>
+<td class="monospace">[hot_tub]</td>
+<td>Indicates if the property has a hot tub</td>
+</tr>
+<tr>
+<td class="monospace">[special_events_welcome]</td>
+<td>Indicates if the property allows guests to host a special events</td>
+</tr>
+<tr>
+<td class="monospace">[two_dogs_welcome_with_fee]</td>
+<td>Indicates if up to two dogs are allowed on a property if guests pay a special fee</td>
+</tr>
+<tr>
+<td class="monospace">[community_pool_access]</td>
+<td>Indicates if renting a property grants access to a community pool</td>
+</tr>
+<tr>
+<td class="monospace">[community_tennis]</td>
+<td>Indicates if renting a property grants access to community tennis courts</td>
+</tr>
+<tr>
+<td class="monospace">[discounted_golf_fees]</td>
+<td>Indicates if guests receive a discount at a local golf course</td>
+</tr>
+<tr>
+<td class="monospace">[firm_4pm_check_in]</td>
+<td>Indicates if a property will not allow guests to check-in earlier than 4pm</td>
+</tr>
+</tbody>
+</table>
+<h2>A data-driven&nbsp;vacation</h2>
+<p>Imagine that you are in charge of planning a vacation to the Outer Banks in the month of July and you want to put together a list of top rental options for your friends/family to review and vote on.
+You go to the rental property website and you find that there are over 300 rental properties available.
+Unfortunately the search tool does not let you easily compare and contrast your options and you have no desire to manually go through and read all the individual property pages.
+You realize that this is a perfect opportunity to put your data science skills to use, so you scrape the website and put together a tabular dataset with information on the rental properties that you can more easily explore.
+Since you need to both explore what&#8217;s available as well as summarize your findings for your friends/family, you decide to put together some interactive&nbsp;visualizations.</p>
+<h2>Interactive plots using&nbsp;[highcharter]{.monospace}</h2>
+<p>The [highcharter]{.monospace} package is used to create interactive versions of the same types of plots we&#8217;ve created using [ggplot2]{.monospace}.
+The syntax for creating a basic plot using [highcharter]{.monospace} is also similar to [ggplot2]{.monospace} and is summarized&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">%&gt;%</span>            <span class="c1"># The dataset</span>
+  <span class="nf">hchart</span><span class="p">(</span>
+    <span class="s">&quot;...&quot;</span><span class="p">,</span>          <span class="c1"># Plot type: &quot;scatter&quot;, &quot;line&quot;, &quot;column&quot;, etc.</span>
+    <span class="nf">hcaes</span><span class="p">(</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="kc">...</span><span class="p">,</span>      <span class="c1"># Variable on x-axis</span>
+      <span class="n">y</span> <span class="o">=</span> <span class="kc">...</span><span class="p">,</span>      <span class="c1"># Variable on y-axis</span>
+      <span class="n">group</span> <span class="o">=</span> <span class="kc">...</span>   <span class="c1"># Apply different colors for groups defined in variable</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p>The ellipses [&#8230;]{.monospace} are placeholders.
+Also note that, within the <code>hchart()</code> function, the <code>hcaes()</code> function plays a similar role to <code>aes()</code> in&nbsp;[ggplot2]{.monospace}.</p>
+<p>@rate-bedrooms-scatter.
+    Let&#8217;s begin our exploration by creating a scatter plot that shows the rental rates for the month of July versus the number of bedrooms a property&nbsp;has,</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">obx</span> <span class="o">%&gt;%</span>
+  <span class="n">hchart</span><span class="p">(</span>
+    <span class="ss">&quot;scatter&quot;</span><span class="p">,</span>
+    <span class="n">hcaes</span><span class="p">(</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">number_of_bedrooms</span><span class="p">,</span>
+      <span class="n">y</span> <span class="o">=</span> <span class="n">rate_jul</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="o">```</span>
+
+<span class="k">If</span> <span class="n">you</span> <span class="n">hover</span> <span class="n">the</span> <span class="n">mouse</span> <span class="k">cursor</span> <span class="n">over</span> <span class="n">the</span> <span class="n">points</span><span class="p">,</span> <span class="n">you</span> <span class="n">should</span> <span class="n">see</span> <span class="n">a</span> <span class="n">pop</span><span class="o">-</span><span class="n">up</span> <span class="n">that</span> <span class="n">lists</span> <span class="n">the</span> <span class="n">x</span> <span class="p">([</span><span class="nb">number</span><span class="err">\</span><span class="n">_of</span><span class="err">\</span><span class="n">_bedrooms</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">)</span> <span class="k">and</span> <span class="n">y</span> <span class="p">([</span><span class="n">rate</span><span class="err">\</span><span class="n">_jul</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">)</span> <span class="k">values</span> <span class="k">for</span> <span class="n">the</span> <span class="n">given</span> <span class="n">point</span><span class="p">.</span>
+<span class="k">Describe</span> <span class="n">the</span> <span class="n">trend</span> <span class="n">that</span> <span class="n">you</span> <span class="n">see</span> <span class="k">in</span> <span class="n">this</span> <span class="n">plot</span><span class="p">,</span> <span class="k">and</span> <span class="k">then</span> <span class="n">use</span> <span class="n">the</span> <span class="n">pop</span><span class="o">-</span><span class="n">ups</span> <span class="k">to</span> <span class="n">figure</span> <span class="k">out</span> <span class="n">how</span> <span class="n">many</span> <span class="n">bedrooms</span> <span class="n">the</span> <span class="n">most</span> <span class="n">expensive</span> <span class="n">rental</span> <span class="n">property</span> <span class="n">has</span> <span class="k">and</span> <span class="n">how</span> <span class="n">many</span> <span class="n">bedrooms</span> <span class="n">the</span> <span class="n">least</span> <span class="n">expensive</span> <span class="n">rental</span> <span class="n">property</span> <span class="n">has</span><span class="p">.</span>
+</pre></div>
+
+
+<p>One of the things we would like to do in our data exploration is to narrow our search towards properties that will have a cheaper rental rate.
+We suspect that an important factor that will affect rental prices is the region where a property is&nbsp;located.</p>
+<p>@regions-summary.
+    Use the following code template to help you compute some summary statistics about the July rental&nbsp;rates,</p>
+<div class="highlight"><pre><span></span><span class="n">```r</span>
+<span class="n">regions_summary &lt;- obx %&gt;%</span>
+<span class="n">  group_by(...) %&gt;%</span>
+<span class="n">  summarize(</span>
+<span class="n">    rate_mean = round(mean(rate_jul)),</span>
+<span class="n">    rate_minimum = min(rate_jul),</span>
+<span class="n">    rate_maximum = max(rate_jul)</span>
+<span class="n">  )</span>
+<span class="n">```</span>
+
+<span class="n">Fill</span> <span class="n">in</span> <span class="n">the</span> <span class="n">ellipses</span> <span class="n">[...]</span><span class="p">{</span><span class="n">.monospace</span><span class="p">}</span> <span class="n">so</span> <span class="n">that</span> <span class="n">you</span> <span class="n">group</span> <span class="n">over</span> <span class="n">the</span> <span class="n">different</span> <span class="n">regions.</span>
+<span class="n">Which</span> <span class="n">region</span> <span class="n">has</span> <span class="n">the</span> <span class="n">highest</span> <span class="n">overall</span> <span class="n">average</span> <span class="n">rental</span> <span class="n">rate</span><span class="o">?</span>
+<span class="n">Which</span> <span class="n">region</span> <span class="n">has</span> <span class="n">the</span> <span class="n">lowest</span> <span class="n">overall</span> <span class="n">average</span> <span class="n">rental</span> <span class="n">rate</span><span class="o">?</span>
+</pre></div>
+
+
+<p>Let&#8217;s use the information we just computed in <strong>Exercise @regions-summary</strong> to make an interactive visualization that we could show to our friends/family.
+We will create a bar chart showing the average July rate for each region, which we will enhance by customizing what is displayed in the pop-up when we hover our mouse cursor over each bar.
+This will be done using the <code>hc_tooltip()</code> and <code>tooltip_table()</code> functions from&nbsp;[highcharter]{.monospace}.</p>
+<p>@summary-bar-chart-1.
+    Fill in the ellipses [&#8230;]{.monospace} in the following code template to create a bar chart the displays the average July rate for each&nbsp;region,</p>
+<div class="highlight"><pre><span></span><span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">regions_summary</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hchart</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;column&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">hcaes</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...,</span><span class="w"></span>
+<span class="w">      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hc_tooltip</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">useHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">pointFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tooltip_table</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="ss">&quot;Region&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Mean rate&quot;</span><span class="p">),</span><span class="w"></span>
+<span class="w">      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="ss">&quot;{point.region}&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;{point.rate_mean}&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Hover</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">mouse</span><span class="w"> </span><span class="k">over</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">bars</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">region</span><span class="p">.</span><span class="w"></span>
+<span class="n">Does</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">pop</span><span class="o">-</span><span class="n">up</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mean</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">computed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="o">**</span><span class="n">Exercise</span><span class="w"> </span><span class="nv">@regions</span><span class="o">-</span><span class="n">summary</span><span class="o">**</span><span class="vm">?</span><span class="w"></span>
+</pre></div>
+
+
+<p>The display information in the pop-up box is set using the vectors passed to the x (names) and y (values) keywords of the <code>tooltip_table()</code> function.
+Take special note of the vector passed to the y keyword, which contains text values with curly braces, [&#8220;{point.region}&#8221;]{.monospace} and [&#8220;{point.rate_mean}&#8221;]{.monospace}.
+This is a special syntax that says, for the data <em>point</em> you currently have your mouse hovering over, display the value for the variable [region]{.monospace} or [rate_mean]{.monospace}.
+Any variable in the [regions_summary]{.monospace} data frame, not just [region]{.monospace} and [rate_mean]{.monospace}, can be displayed in the pop-up&nbsp;box.</p>
+<p>@summary-bar-chart-2.
+    The pop-up boxes for the visualization you created in <strong>Exercise @summary-bar-chart-1</strong> currently list two pieces of information, the name of the region and the mean rate.
+    While nice to see, this simply repeats what we are already looking at in the bar chart.
+    The real power of interactive visualizations is when we can include additional information.
+    Copy the code you wrote for <strong>Exercise @summary-bar-chart-1</strong> and modify the vectors passed to the x and y keywords in <code>tooltip_table()</code> so that each pop-up contains two additional lines of information, the <em>Minimum rate</em> and <em>Maximum rate</em> for each&nbsp;region.</p>
+<p>We now have a nice interactive visualization that summarizes the average, minimum, and maximum rental rates that we can show our friends/family to show which regions contain the cheapest and most expensive rental properties.
+Let&#8217;s filter the dataset so that we can focus our search on properties in the region with the cheapest rates on&nbsp;average.</p>
+<p>@filter-properties.
+    Use the <code>filter()</code> function to filter the dataset so that it only contains rental properties from the region with the cheapest July rates on average.
+    Assign this filtered data frame to a variable called&nbsp;[obx_region]{.monospace}.</p>
+<p>Let&#8217;s wrap up by updating the scatter plot we created in <strong>Exercise @rate-bedrooms-scatter</strong> by using the filtered dataset [obx_region]{.monospace} and customizing the pop-up message for each data&nbsp;point.</p>
+<p>@update-rate-bedrooms-scatter.
+    Complete the following code template to add pop-ups to the visualization that lists the following&nbsp;information,</p>
+<div class="highlight"><pre><span></span><span class="o">*</span><span class="w">   </span><span class="n">Property</span><span class="w"> </span><span class="n">number</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="n">Property</span><span class="w"> </span><span class="n">name</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="n">July</span><span class="w"> </span><span class="n">rate</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="n">Number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">bedrooms</span><span class="w"></span>
+
+<span class="o">*</span><span class="w">   </span><span class="n">Number</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">parking</span><span class="w"> </span><span class="n">spaces</span><span class="w"></span>
+
+<span class="err">```</span><span class="n">r</span><span class="w"></span>
+<span class="n">obx_region</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hchart</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;scatter&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">hcaes</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number_of_bedrooms</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rate_jul</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">waterfront</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"></span>
+<span class="w">  </span><span class="n">hc_tooltip</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">useHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">pointFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tooltip_table</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(...),</span><span class="w"></span>
+<span class="w">      </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">combine</span><span class="p">(...)</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+<span class="err">```</span><span class="w"></span>
+
+<span class="n">Does</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="o">[</span><span class="n">waterfront</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="p">(</span><span class="n">oceanfront</span><span class="p">,</span><span class="w"> </span><span class="n">semi</span><span class="o">-</span><span class="n">oceanfront</span><span class="p">,</span><span class="w"> </span><span class="n">soundfront</span><span class="p">,</span><span class="w"> </span><span class="n">inland</span><span class="p">)</span><span class="w"> </span><span class="n">affect</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">July</span><span class="w"> </span><span class="n">rate</span><span class="vm">?</span><span class="w"></span>
+<span class="k">If</span><span class="w"> </span><span class="n">so</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="k">contains</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cheapest</span><span class="w"> </span><span class="n">rates</span><span class="w"> </span><span class="n">overall</span><span class="vm">?</span><span class="w"></span>
+</pre></div>
+
+
+<p>Before we move on, let&#8217;s filter the dataset one more&nbsp;time.</p>
+<p>@final-data-filter.
+    After checking with your family/friends, you have determined that you will need a rental property with six bedrooms.
+    Filter [obx_region]{.monospace} so that it only contains properties with six bedrooms.
+    <strong>In addition, if you determined in Exercise @update-rate-bedrooms-scatter that there is a [waterfront]{.monospace} category that has cheaper overall rates, also filter the dataset to only include properties within this category.</strong>
+    Assign the filtered dataset to a variable called&nbsp;[obx_filtered]{.monospace}.</p>
+<h2>Interactive maps using&nbsp;[leaflet]{.monospace}</h2>
+<p>The [leaflet]{.monospace} package lets us create interactive maps, which can be very useful when working with spatial data encoded as latitude and longitude values.
+The basic syntax for creating an interactive map using [leaflet]{.monospace} is summarized&nbsp;below,</p>
+<div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">%&gt;%</span>
+  <span class="nf">leaflet</span><span class="p">()</span> <span class="o">%&gt;%</span>
+  <span class="nf">addTiles</span><span class="p">()</span> <span class="o">%&gt;%</span>
+  <span class="nf">addMarkers</span><span class="p">(</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="o">~&lt;</span><span class="n">latitude_variable</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">lng</span> <span class="o">=</span> <span class="o">~&lt;</span><span class="n">longitude_variable</span><span class="o">&gt;</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p>where [\&lt;latitude_variable>]{.monospace} and [\&lt;longitude_variable>]{.monospace} are&nbsp;placeholders.</p>
+<p>::: {.callout .secondary}&nbsp;[Important!]{.h4}</p>
+<p>The tilde [~]{.monospace} immediately before [\&lt;latitude_variable>]{.monospace} and [\&lt;longitude_variable>]{.monospace} are important and must be included.
+For example, you would write [lat = ~lat_var]{.monospace} if [lat_var]{.monospace} is the column containing the latitude values.&nbsp;:::</p>
+<p>Our goal is to build an interactive map that our friends/family could browse that shows the properties that meet our filter criteria.
+We will adopt an iterative approach to building our map by adding features to it one step at a&nbsp;time.</p>
+<p>@basic-map-of-filtered-data.
+    Use the [leaflet]{.monospace} syntax summarized above to create a basic interactive map showing the properties in&nbsp;[obx_filtered]{.monospace}.</p>
+<div class="highlight"><pre><span></span><span class="o">::</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="p">.</span><span class="n">callout</span><span class="w"> </span><span class="p">.</span><span class="k">primary</span><span class="err">}</span><span class="w"></span>
+<span class="o">[</span><span class="n">Hint</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="n">containing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">location</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">named</span><span class="w"> </span><span class="o">[</span><span class="n">latitude</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">[</span><span class="n">longitude</span><span class="o">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span><span class="p">.</span><span class="w"></span>
+<span class="o">::</span><span class="err">:</span><span class="w"></span>
+</pre></div>
+
+
+<p>One interesting thing we can do with the interactive map that we&#8217;re building is add points of interest.
+For example, the first ever <a href="https://www.duckdonuts.com/about-us/our-story/"><i class="fas fa-link"></i>Duck Donuts</a> store (which, appropriately enough, sells <a href="https://en.wikipedia.org/wiki/Doughnut"><i class="fas fa-link"></i>doughnuts</a>) opened in the Outer Banks, which could be one possible place to visit.
+We can display the location for the Duck Donuts store as a circle so that it looks different from the other markers.
+We can also add a pop-up to it that displays the street address for the&nbsp;store.</p>
+<p>@duck-donuts-map.
+    Copy the code you wrote for <strong>Exercise @basic-map-of-filtered-data</strong> and add the Duck Donuts location marker with street address pop-up to it as&nbsp;follows,</p>
+<div class="highlight"><pre><span></span><span class="err">```r</span>
+<span class="err">&lt;code_from_previous_exercise&gt; %&gt;%</span>
+<span class="err">  addCircleMarkers(</span>
+<span class="err">    lat = 36.1633527,</span>
+<span class="err">    lng = -75.7534337,</span>
+<span class="err">    popup = &quot;Duck Donuts&lt;br&gt;1190 Duck Rd&lt;br&gt;Duck, NC 27949&quot;,</span>
+<span class="err">    popupOptions = popupOptions(closeButton = FALSE)</span>
+<span class="err">  ) %&gt;%</span>
+<span class="err">  addPopups(</span>
+<span class="err">    lat = 36.1633527,</span>
+<span class="err">    lng = -75.7534337,</span>
+<span class="err">    popup = &quot;Duck Donuts&lt;br&gt;1190 Duck Rd&lt;br&gt;Duck, NC 27949&quot;,</span>
+<span class="err">    options = popupOptions(closeButton = FALSE)</span>
+<span class="err">  )</span>
+<span class="err">```</span>
+</pre></div>
+
+
+<p>We can add the same kind of pop-up that we used for the Duck Donuts marker to our regular property markers, which will allow a user to click the marker icon and see additional information about the property.
+Without this, our friends/family will not be able to understand which property corresponds with each&nbsp;icon.</p>
+<p>@customize-property-popups-map.
+    Copy the code you wrote for <strong>Exercise @duck-donuts-map</strong> and add a new input to the <code>addMarkers()</code> function called&nbsp;[popup]{.monospace},</p>
+<div class="highlight"><pre><span></span><span class="o">```</span><span class="n">r</span>
+<span class="n">addMarkers</span><span class="p">(</span>
+  <span class="n">lat</span> <span class="o">=</span> <span class="o">~&lt;</span><span class="n">latitude_variable</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="n">lng</span> <span class="o">=</span> <span class="o">~&lt;</span><span class="n">longitude_variable</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="n">popup</span> <span class="o">=</span> <span class="o">~</span><span class="n">paste0</span><span class="p">(</span>
+    <span class="n">property_name</span><span class="p">,</span>
+    <span class="ss">&quot;&lt;br&gt;&quot;</span><span class="p">,</span>
+    <span class="ss">&quot;July weekly rate: $&quot;</span><span class="p">,</span>
+    <span class="n">rate_jul</span><span class="p">,</span>
+    <span class="ss">&quot;&lt;br&gt;&quot;</span><span class="p">,</span>
+    <span class="p">...</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+<span class="o">```</span>
+
+<span class="n">The</span> <span class="n">ellipses</span> <span class="p">[...]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="k">is</span> <span class="n">a</span> <span class="n">placeholder</span><span class="p">.</span>
+<span class="n">The</span> <span class="n">pop</span><span class="o">-</span><span class="n">up</span> <span class="n">message</span> <span class="k">for</span> <span class="k">each</span> <span class="n">property</span> <span class="k">is</span> <span class="n">created</span> <span class="k">by</span> <span class="n">the</span> <span class="n">inputs</span> <span class="k">to</span> <span class="n">the</span> <span class="o">`</span><span class="n">paste0</span><span class="p">()</span><span class="o">`</span> <span class="k">function</span><span class="p">,</span> <span class="n">which</span> <span class="n">concatenates</span> <span class="n">the</span> <span class="n">different</span> <span class="n">inputs</span> <span class="n">together</span> <span class="k">into</span> <span class="n">a</span> <span class="n">single</span> <span class="n">piece</span> <span class="k">of</span> <span class="nb">text</span><span class="p">.</span>
+<span class="n">You</span> <span class="n">can</span> <span class="n">see</span> <span class="n">the</span> <span class="n">pop</span><span class="o">-</span><span class="n">ups</span> <span class="k">by</span> <span class="n">clicking</span> <span class="n">the</span> <span class="n">markers</span> <span class="k">for</span> <span class="n">the</span> <span class="n">different</span> <span class="n">properties</span><span class="p">.</span>
+
+<span class="k">Replace</span> <span class="n">the</span> <span class="n">ellipses</span> <span class="k">with</span> <span class="k">more</span> <span class="n">inputs</span> <span class="k">to</span> <span class="n">the</span> <span class="o">`</span><span class="n">paste0</span><span class="p">()</span><span class="o">`</span> <span class="k">function</span> <span class="n">so</span> <span class="n">that</span> <span class="n">the</span> <span class="n">pop</span><span class="o">-</span><span class="n">up</span> <span class="n">displays</span> <span class="n">the</span> <span class="n">following</span> <span class="n">additional</span> <span class="n">information</span> <span class="n">about</span> <span class="k">each</span> <span class="n">property</span><span class="p">,</span>
+
+<span class="o">*</span>   <span class="nb">Number</span> <span class="k">of</span> <span class="n">bedrooms</span>
+
+<span class="o">*</span>   <span class="nb">Number</span> <span class="k">of</span> <span class="k">full</span> <span class="n">bathrooms</span>
+
+<span class="o">*</span>   <span class="nb">Number</span> <span class="k">of</span> <span class="n">parking</span> <span class="n">spots</span>
+
+<span class="o">*</span>   <span class="n">Distance</span> <span class="k">to</span> <span class="n">the</span> <span class="n">beach</span>
+
+<span class="o">*</span>   <span class="n">Latitude</span>
+
+<span class="o">*</span>   <span class="n">Longitude</span>
+
+<span class="p">:::</span><span class="err">{</span><span class="p">.</span><span class="n">callout</span> <span class="p">.</span><span class="n">secondary</span><span class="err">}</span>
+<span class="p">[</span><span class="n">Important</span><span class="o">!</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">h4</span><span class="err">}</span>
+
+<span class="n">The</span> <span class="p">[</span><span class="ss">&quot;\&lt;br\&gt;&quot;</span><span class="p">]</span><span class="err">{</span><span class="p">.</span><span class="n">monospace</span><span class="err">}</span> <span class="n">inputs</span> <span class="k">are</span> <span class="n">line</span> <span class="n">breaks</span> <span class="n">that</span> <span class="n">will</span> <span class="n">make</span> <span class="nb">text</span> <span class="n">display</span> <span class="k">on</span> <span class="n">a</span> <span class="k">new</span> <span class="n">line</span><span class="p">.</span>
+<span class="n">This</span> <span class="k">is</span> <span class="n">analogous</span> <span class="k">to</span> <span class="n">what</span> <span class="n">happens</span> <span class="k">in</span> <span class="n">a</span> <span class="nb">text</span> <span class="n">editor</span> <span class="k">when</span> <span class="n">you</span> <span class="n">press</span> <span class="n">the</span> <span class="o">&lt;</span><span class="n">kbd</span><span class="o">&gt;</span><span class="n">Enter</span><span class="o">&lt;/</span><span class="n">kbd</span><span class="o">&gt;</span> <span class="k">key</span> <span class="k">on</span> <span class="n">your</span> <span class="n">keyboard</span><span class="p">.</span>
+<span class="p">:::</span>
+</pre></div>
+
+
+<p>While there is always more that you could add to these interactive maps, this should be sufficient for your friends/family to browse and decide which properties they think are the most promising choices for your upcoming&nbsp;vacation.</p>
+<h2>How to&nbsp;submit</h2>
+<p>To submit your lab, follow the two steps below.
+Your lab will be graded for credit <strong>after</strong> you&#8217;ve completed both&nbsp;steps!</p>
+<ol>
+<li>
+<p>Save, commit, and push your completed R Markdown file so that everything is synchronized to GitHub.
+    If you do this right, then you will be able to view your completed file on the GitHub&nbsp;website.</p>
+</li>
+<li>
+<p>Knit your R Markdown document to the <span class="caps">PDF</span> format, export (download) the <span class="caps">PDF</span> file from RStudio Server, and then upload it to <em>Lab 6</em> posting on&nbsp;Blackboard.</p>
+</li>
+</ol>
+<h2>Cheatsheets</h2>
+<p>You are encouraged to review and keep the following cheatsheets handy while working on this&nbsp;lab:</p>
+<ul>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/leaflet.pdf">leaflet&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf">data import/tidyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">dplyr&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf">ggplot2&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf">RStudio&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://github.com/rstudio/cheatsheets/raw/master/rmarkdown-2.0.pdf">R Markdown&nbsp;cheatsheet</a></p>
+</li>
+<li>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf">R Markdown&nbsp;reference</a></p>
+</li>
+</ul>
+<h2>Credits</h2>
+<p>This lab is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+The original idea for the lab along with the first version of the lab instructions were written by Ajay Kulkarni for <span class="caps">CDS</span>-102.
+Revised instructions and new exercises written by James&nbsp;Glasbrenner.</p>
+<h2>References</h2>
+</div>    </article>
+    </div>
+<footer class="page-footer">
+    <div class="footer-grid-container">
+      Except where otherwise noted, site materials are created by
+      <a href="https://cos.gmu.edu/cds/faculty-profile-james-glasbrenner/">
+        James K. Glasbrenner
+      </a>
+      and
+      <a href="https://cos.gmu.edu/cds/faculty-profile-dominic-white/">
+        Dominic White
+      </a>
+      and licensed under a
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+        Creative Commons Attribution-ShareAlike 4.0 International License
+      </a>.
+    </div>
+</footer><script src="/theme/js/cds101.min.js"></script>
+  <script src="/theme/js/vendor/highlightjs/highlight.min.js"></script>
+  <script src="/theme/js/vendor/katex/katex.min.js"></script>
+  <script src="/theme/js/vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="/theme/js/vendor/wookmark/wookmark.min.js"></script>
+  <script src="/theme/js/vendor/fontawesome/fontawesome-all.min.js"></script>
+  <script src="/theme/js/vendor/vendorInit.js"></script>
+  </body>
+</html>
