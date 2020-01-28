@@ -1,8 +1,8 @@
 Title: CDS 101 Syllabus
-Author: Dr. Glasbrenner
+Author: Dr. White
 Author_Image: https://www.gravatar.com/avatar/49802fdfa5a0e63b3d932a5179d41c1e
-Date: 2019-05-24 00:00
-Modified: 2019-05-24 00:56
+Date: 2019-08-24 00:00
+Modified: 2019-08-24 00:56
 Course_Title: Introduction to Computational and Data Sciences
 Course_Number: CDS 101
 Semester: Online
@@ -23,7 +23,7 @@ These tools will also be used to critically examine statistical claims reported 
 
 *   **Classroom:** Online
 *   **Meeting times:** Asynchronous
-*   **University holidays:** Labor Day, September 3, Columbus Day, October 8, Thanksgiving Recess, November 21 -- 25
+*   **University holidays:** Labor Day, September 2, Fall break, October 14, Thanksgiving Recess, November 27 -- 29
 *   **Credit hours:** 3.0 credit hours
 *   **Prerequisites:** None, but a background in algebra is assumed.
 *   **Mason Core:** Natural science (+lab when taken with CDS 102)
@@ -32,11 +32,11 @@ These tools will also be used to critically examine statistical claims reported 
 
 ![](https://www.gravatar.com/avatar/49802fdfa5a0e63b3d932a5179d41c1e?s=128)
 
-Dr. James K. Glasbrenner
+Dr. Dominic White
 
-*   **Office**: 253 Research Hall
+*   **Office**: 242 Research Hall
 *   **Phone:** (703) 993-4512
-*   **Email:** [[jglasbr2\@gmu.edu]{.monospace}](mailto:jglasbr2@gmu.edu)
+*   **Email:** [[dwhite34\@gmu.edu]{.monospace}](mailto:dwhite34@gmu.edu)
 *   **Office hours:** Virtual office hours held on Blackboard Collaborate Ultra every Wednesday between 4:00pm -- 5:00pm.
     Individual video conferencing sessions or on-campus meetings must be made by appointment.
 

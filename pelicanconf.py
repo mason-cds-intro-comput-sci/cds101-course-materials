@@ -7,8 +7,8 @@ from __future__ import unicode_literals
 AUTHOR = "Dr. Glasbrenner"
 SITENAME = "CDS 101: Introduction to Computational and Data Sciences"
 SITEURL = ""
-SLACK_URL = "http://su19-masoncds101.slack.com"
-GITHUB_URL = "https://github.com/jkglasbrenner/cds101-course-materials"
+#SLACK_URL = "http://su19-masoncds101.slack.com"
+#GITHUB_URL = "https://github.com/jkglasbrenner/cds101-course-materials"
 UNIVERSITYURL = "https://gmu.edu"
 TIMEZONE = "America/New_York"
 DEFAULT_LANG = "en"
@@ -23,7 +23,7 @@ READERS = {
 # THEME
 THEME = "theme"
 THEME_STATIC_PATHS = ["static"]
-FRONT_PAGE_STYLE = "schedule"
+FRONT_PAGE_STYLE = "under_construction"
 TYPOGRIFY = True
 HIGHLIGHT_JS_STYLE = "default"
 
@@ -77,15 +77,15 @@ SUMMARY_MAX_LENGTH = 50
 
 # Menu items
 MENUITEMS = [
-    (False, "Materials", "materials.html"),
-    (False, "Assignments", "assignments.html"),
-    (False, "Labs", "labs.html"),
+    #(False, "Materials", "materials.html"),
+    #(False, "Assignments", "assignments.html"),
+    (False, "CDS 102 Labs", "https://labs.cds101.com"),
     # (False, "Syllabus", "syllabus.html"),
     # (False, "Datasets", "datasets.html"),
 ]
 
 # Plugins
-PLUGIN_PATHS = ["pelican-plugins"]
+PLUGIN_PATHS = ["/home/dominic/Programs/pelican-plugins"]
 PLUGINS = [
     "custom_article_urls",
     "pandoc_reader",
